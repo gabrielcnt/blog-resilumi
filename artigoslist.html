@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aba de Artigos</title>
+    <style>
+        :root {
+            --white: #FFFFFF;
+            --orange: #FF7F2A;
+            --purple: #8A2BE2;
+            --light-purple: #B088E3;
+            --off-white: #F9F9F9;
+            --dark: #333333;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--off-white);
+            color: var(--dark);
+        }
+        
+        header {
+            background-color: var(--purple);
+            color: var(--white);
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .search-container {
+            background-color: var(--white);
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            border-bottom: 1px solid var(--light-purple);
+        }
+        
+        .search-bar {
+            display: flex;
+            width: 80%;
+            max-width: 600px;
+        }
+        
+        .search-bar input {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid var(--light-purple);
+            border-right: none;
+            border-radius: 4px 0 0 4px;
+            font-size: 16px;
+        }
+        
+        .search-bar button {
+            background-color: var(--orange);
+            color: var(--white);
+            border: none;
+            padding: 0 20px;
+            border-radius: 0 4px 4px 0;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        .categories {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            padding: 15px;
+            background-color: var(--white);
+            flex-wrap: wrap;
+        }
+        
+        .category {
+            background-color: var(--light-purple);
+            color: var(--white);
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .category:hover {
+            background-color: var(--purple);
+        }
+        
+        .active {
+            background-color: var(--orange);
+        }
+        
+        .articles-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .article-card {
+            background-color: var(--white);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .article-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+        
+        .article-image {
+            height: 180px;
+            background-color: var(--light-purple);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .article-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .article-tag {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: var(--orange);
+            color: var(--white);
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .article-content {
+            padding: 20px;
+        }
+        
+        .article-title {
+            font-size: 18px;
+            margin-bottom: 10px;
+            color: var(--dark);
+        }
+        
+        .article-excerpt {
+            color: var(--dark);
+            font-size: 14px;
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+        
+        .article-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            color: var(--dark);
+            opacity: 0.7;
+        }
+        
+        .read-more {
+            display: inline-block;
+            background-color: var(--purple);
+            color: var(--white);
+            padding: 8px 16px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background-color 0.3s;
+            margin-top: 10px;
+        }
+        
+        .read-more:hover {
+            background-color: var(--orange);
+        }
+        
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin: 30px 0;
+            gap: 10px;
+        }
+        
+        .page-number {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background-color: var(--white);
+            border-radius: 50%;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            color: var(--dark);
+            font-weight: bold;
+        }
+        
+        .page-number:hover {
+            background-color: var(--light-purple);
+            color: var(--white);
+        }
+        
+        .page-number.active {
+            background-color: var(--orange);
+            color: var(--white);
+        }
+        
+        @media (max-width: 768px) {
+            .articles-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .search-bar {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Artigos</h1>
+        <p>Descubra conhecimento, explore ideias e mantenha-se atualizado</p>
+    </header>
+    
+    <div class="search-container">
+        <div class="search-bar">
+            <input type="text" placeholder="Pesquisar artigos...">
+            <button>Buscar</button>
+        </div>
+    </div>
+    
+    <div class="categories">
+        <div class="category active">Todos</div>
+        <div class="category">Tecnologia</div>
+        <div class="category">Saúde</div>
+        <div class="category">Negócios</div>
+        <div class="category">Cultura</div>
+        <div class="category">Ciência</div>
+    </div>
+    
+    <div class="articles-container">
+        <!-- Artigo 1 -->
+        <div class="article-card">
+            <div class="article-image">
+                <img src="/api/placeholder/400/320" alt="Imagem do artigo">
+                <div class="article-tag">Tecnologia</div>
+            </div>
+            <div class="article-content">
+                <h3 class="article-title">Como a Inteligência Artificial está moldando o futuro</h3>
+                <p class="article-excerpt">Uma análise profunda sobre o impacto da IA no mercado de trabalho, na educação e no cotidiano das pessoas.</p>
+                <div class="article-meta">
+                    <span>12 Mar 2025</span>
+                    <span>5 min de leitura</span>
+                </div>
+                <a href="#" class="read-more">Ler mais</a>
+            </div>
+        </div>
+        
+        <!-- Artigo 2 -->
+        <div class="article-card">
+            <div class="article-image">
+                <img src="/api/placeholder/400/320" alt="Imagem do artigo">
+                <div class="article-tag">Saúde</div>
+            </div>
+            <div class="article-content">
+                <h3 class="article-title">Novos avanços no tratamento do Alzheimer</h3>
+                <p class="article-excerpt">Pesquisadores descobrem método promissor para retardar o avanço da doença em pacientes em estágio inicial.</p>
+                <div class="article-meta">
+                    <span>10 Mar 2025</span>
+                    <span>8 min de leitura</span>
+                </div>
+                <a href="#" class="read-more">Ler mais</a>
+            </div>
+        </div>
+        
+        <!-- Artigo 3 -->
+        <div class="article-card">
+            <div class="article-image">
+                <img src="/api/placeholder/400/320" alt="Imagem do artigo">
+                <div class="article-tag">Negócios</div>
+            </div>
+            <div class="article-content">
+                <h3 class="article-title">Estratégias para crescimento sustentável em 2025</h3>
+                <p class="article-excerpt">Conheça as melhores práticas e tendências para desenvolver seu negócio de forma sustentável no cenário atual.</p>
+                <div class="article-meta">
+                    <span>8 Mar 2025</span>
+                    <span>6 min de leitura</span>
+                </div>
+                <a href="#" class="read-more">Ler mais</a>
+            </div>
+        </div>
+        
+        <!-- Artigo 4 -->
+        <div class="article-card">
+            <div class="article-image">
+                <img src="/api/placeholder/400/320" alt="Imagem do artigo">
+                <div class="article-tag">Cultura</div>
+            </div>
+            <div class="article-content">
+                <h3 class="article-title">O renascimento da literatura regional no mundo digital</h3>
+                <p class="article-excerpt">Como as plataformas digitais estão ajudando a reviver e difundir literaturas regionais pelo mundo.</p>
+                <div class="article-meta">
+                    <span>5 Mar 2025</span>
+                    <span>7 min de leitura</span>
+                </div>
+                <a href="#" class="read-more">Ler mais</a>
+            </div>
+        </div>
+        
+        <!-- Artigo 5 -->
+        <div class="article-card">
+            <div class="article-image">
+                <img src="/api/placeholder/400/320" alt="Imagem do artigo">
+                <div class="article-tag">Ciência</div>
+            </div>
+            <div class="article-content">
+                <h3 class="article-title">Nova descoberta sobre energia renovável</h3>
+                <p class="article-excerpt">Cientistas desenvolvem método revolucionário para aumentar a eficiência de painéis solares em até 40%.</p>
+                <div class="article-meta">
+                    <span>3 Mar 2025</span>
+                    <span>9 min de leitura</span>
+                </div>
+                <a href="#" class="read-more">Ler mais</a>
+            </div>
+        </div>
+        
+        <!-- Artigo 6 -->
+        <div class="article-card">
+            <div class="article-image">
+                <img src="/api/placeholder/400/320" alt="Imagem do artigo">
+                <div class="article-tag">Tecnologia</div>
+            </div>
+            <div class="article-content">
+                <h3 class="article-title">O futuro da computação quântica</h3>
+                <p class="article-excerpt">Um olhar sobre como os computadores quânticos podem revolucionar a indústria tecnológica nos próximos anos.</p>
+                <div class="article-meta">
+                    <span>1 Mar 2025</span>
+                    <span>10 min de leitura</span>
+                </div>
+                <a href="#" class="read-more">Ler mais</a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="pagination">
+        <div class="page-number active">1</div>
+        <div class="page-number">2</div>
+        <div class="page-number">3</div>
+        <div class="page-number">4</div>
+        <div class="page-number">5</div>
+    </div>
+</body>
+</html>

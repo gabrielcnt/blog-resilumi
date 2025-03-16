@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Como escolher a madeira ideal para seus projetos</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Helvetica, Arial, sans-serif;
+            color: #444444;
+        }
+
+        header {
+            border-bottom: 1px solid #EEEEEE;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.25rem;
+            font-weight: bold;
+        }
+
+        .logo-arte { color: #8A2BE2; }
+        .logo-madeira { color: #FF7F2A; }
+
+        nav a {
+            margin-left: 2rem;
+            text-decoration: none;
+            color: #333333;
+        }
+
+        nav a.active {
+            color: #FF7F2A;
+            font-weight: bold;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .article-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .article-title {
+            color: #8A2BE2;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .article-meta {
+            color: #666666;
+            font-size: 0.875rem;
+        }
+
+        .featured-image {
+            width: 100%;
+            height: 400px;
+            background-color: #DDDDDD;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+        }
+
+        .article-content {
+            line-height: 1.6;
+        }
+
+        .section-title {
+            color: #8A2BE2;
+            font-size: 1.25rem;
+            margin: 2rem 0 1rem;
+        }
+
+        .tags {
+            display: flex;
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .tag {
+            background-color: #B088E3;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 999px;
+            font-size: 0.75rem;
+        }
+
+        .related-articles {
+            background-color: #F9F9F9;
+            padding: 3rem 0;
+            text-align: center;
+        }
+
+        .related-title {
+            color: #8A2BE2;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            position: relative;
+            display: inline-block;
+        }
+
+        .related-title::after {
+            content: '';
+            position: absolute;
+            bottom: -0.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px;
+            height: 3px;
+            background-color: #FF7F2A;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <span class="logo-arte">Arte</span>
+            <span class="logo-madeira">Madeira</span>
+        </div>
+        <nav>
+            <a href="#">Início</a>
+            <a href="#">Tutoriais</a>
+            <a href="#">Técnicas</a>
+            <a href="#" class="active">Blog</a>
+        </nav>
+    </header>
+
+    <main class="container">
+        <article>
+            <div class="article-header">
+                <h1 class="article-title">Como escolher a madeira ideal para seus projetos</h1>
+                <div class="article-meta">Por Maria Silva | Publicado em 12 de março, 2025</div>
+            </div>
+
+            <div class="featured-image"></div>
+
+            <div class="article-content">
+                <p>
+                    Escolher a madeira certa para o seu projeto de artesanato pode fazer toda a diferença no
+                    resultado final. Cada tipo de madeira possui características únicas que a tornam mais
+                    adequada para determinados tipos de trabalho.
+                </p>
+
+                <h2 class="section-title">Madeiras macias vs. madeiras duras</h2>
+                <p>
+                    As madeiras são geralmente classificadas em dois grandes grupos: madeiras macias e
+                    madeiras duras. Essa classificação não se refere necessariamente à dureza física da
+                    madeira, mas à sua origem botânica.
+                </p>
+                <p>
+                    Madeiras macias vêm de coníferas (como pinho e cedro) e geralmente são mais fáceis
+                    de trabalhar, ideais para iniciantes. Já as madeiras duras vêm de árvores de folhas
+                    largas (como carvalho, jacarandá e mogno) e oferecem maior durabilidade e
+                    acabamento refinado.
+                </p>
+
+                <div class="tags">
+                    <span class="tag">Madeira</span>
+                    <span class="tag">Materiais</span>
+                    <span class="tag">Dicas</span>
+                </div>
+            </div>
+        </article>
+    </main>
+
+    <section class="related-articles">
+        <h2 class="related-title">Artigos Relacionados</h2>
+        <!-- Aqui você pode adicionar cards de artigos relacionados -->
+    </section>
+</body>
+</html>
