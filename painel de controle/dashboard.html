@@ -20,19 +20,16 @@
         </header>
         
         <nav class="sidebar">
-            <a href="" class="nav-item active">
+            <a href="#/dashboard" id="dashboard-section" class="nav-item active">
                 <span>Dashboard</span>
             </a>
-            <a href="#" class="nav-item">
-                <span>Artigos</span>
-            </a>
-            <a href="#" class="nav-item">
+            <a href="#/categorias" id="categories-section" class="nav-item">
                 <span>Categorias</span>
             </a>
-            <a href="#" class="nav-item">
+            <a href="#/comentarios" id="coments-section" class="nav-item">
                 <span>Comentários</span>
             </a>
-            <a href="#" class="nav-item">
+            <a href="#/configuracoes" id="settings-section" class="nav-item">
                 <span>Configurações</span>
             </a>
         </nav>
@@ -41,136 +38,5 @@
         </main>
     </div>
     
-    <!-- TELA DE ADIÇÃO/EDIÇÃO DE ARTIGO -->
-    <div id="edit-article" style="display: none;">
-        <header>
-            <h1>Painel de Controle do Blog</h1>
-            <div class="user-info">
-                <span>Admin</span>
-                <div class="user-avatar">A</div>
-            </div>
-        </header>
-        
-        <nav class="sidebar">
-            <a href="#" class="nav-item">
-                <span>Dashboard</span>
-            </a>
-            <a href="#" class="nav-item active">
-                <span>Artigos</span>
-            </a>
-            <a href="#" class="nav-item">
-                <span>Categorias</span>
-            </a>
-            <a href="#" class="nav-item">
-                <span>Comentários</span>
-            </a>
-            <a href="#" class="nav-item">
-                <span>Configurações</span>
-            </a>
-        </nav>
-        
-        <main class="main-content">
-            <div class="dashboard-header">
-                <h2 class="page-title">Editar Artigo</h2>
-            </div>
-            
-            <div class="tab-container">
-                <div class="tabs">
-                    <div class="tab active">Informações Básicas</div>
-                    <div class="tab">Conteúdo</div>
-                    <div class="tab">SEO & Mídias</div>
-                    <div class="tab">Configurações</div>
-                </div>
-                
-                <div class="tab-content">
-                    <div class="tab-pane active">
-                        <div class="form-container">
-                            <h3 class="form-title">Detalhes do Artigo</h3>
-                            
-                            <div class="form-group">
-                                <label for="title">Título do Artigo</label>
-                                <input type="text" id="title" class="form-control" value="Como a Inteligência Artificial está moldando o futuro">
-                            </div>
-                            
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label for="category">Categoria</label>
-                                    <select id="category" class="form-control">
-                                        <option value="tech" selected>Tecnologia</option>
-                                        <option value="health">Saúde</option>
-                                        <option value="business">Negócios</option>
-                                        <option value="culture">Cultura</option>
-                                        <option value="science">Ciência</option>
-                                    </select>
-                                </div>
-                                
-                                <div class="form-group">
-                                    <label for="author">Autor</label>
-                                    <select id="author" class="form-control">
-                                        <option value="1" selected>João Silva</option>
-                                        <option value="2">Maria Oliveira</option>
-                                        <option value="3">Carlos Mendes</option>
-                                        <option value="4">Ana Santos</option>
-                                    </select>
-                                </div>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="excerpt">Resumo</label>
-                                <textarea id="excerpt" class="form-control">Uma análise profunda sobre o impacto da IA no mercado de trabalho, na educação e no cotidiano das pessoas.</textarea>
-                            </div>
-                            
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label for="publish-date">Data de Publicação</label>
-                                    <input type="date" id="publish-date" class="form-control" value="2025-03-12">
-                                </div>
-                                
-                                <div class="form-group">
-                                    <label for="reading-time">Tempo de Leitura (min)</label>
-                                    <input type="number" id="reading-time" class="form-control" value="5">
-                                </div>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label>Status</label>
-                                <div class="status-toggle">
-                                    <span class="toggle-label">Rascunho</span>
-                                    <label class="toggle-switch">
-                                        <input type="checkbox" checked>
-                                        <span class="toggle-slider"></span>
-                                    </label>
-                                    <span class="toggle-label">Publicado</span>
-                                </div>
-                            </div>
-                            
-                            <div class="form-actions">
-                                <button class="btn btn-lg btn-secondary">Cancelar</button>
-                                <button class="btn btn-lg btn-primary">Salvar</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </main>
-    </div>
-    
-    <!-- MODAL DE CONFIRMAÇÃO DE EXCLUSÃO -->
-    <div class="modal-backdrop" style="display: none;">
-        <div class="modal">
-            <div class="modal-header">
-                <h3 class="modal-title">Confirmar Exclusão</h3>
-                <button class="modal-close">&times;</button>
-            </div>
-            <div class="modal-body">
-                <p>Tem certeza que deseja excluir o artigo "Como a Inteligência Artificial está moldando o futuro"?</p>
-                <p>Esta ação não pode ser desfeita.</p>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary">Cancelar</button>
-                <button class="btn btn-delete">Sim, Excluir</button>
-            </div>
-        </div>
-    </div>
     <script type="module" src="index.js"></script>
 </html>

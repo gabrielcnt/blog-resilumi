@@ -1,4 +1,7 @@
+import {openModal} from "../../utils/modal/modal.js"
 import { btnEdit, btnView } from "../../utils/navigation.js"
+import {setActiveSection} from "../../utils/sidebarNavigation.js"
+
 export default () => {
     const container = document.createElement('div')
 
@@ -57,6 +60,7 @@ export default () => {
                             <th>Autor</th>
                             <th>Data</th>
                             <th>Status</th>
+                            <th>Visualizações</th>
                             <th>Ações</th>
                         </tr>
                     </thead>
@@ -67,6 +71,7 @@ export default () => {
                             <td>João Silva</td>
                             <td>12/03/2025</td>
                             <td><span class="status-badge status-published">Publicado</span></td>
+                            <td>1,245</td>
                             <td class="actions">
                                 <button class="btn btn-view">Ver</button>
                                 <button class="btn btn-edit">Editar</button>
@@ -79,6 +84,7 @@ export default () => {
                             <td>Maria Oliveira</td>
                             <td>10/03/2025</td>
                             <td><span class="status-badge status-published">Publicado</span></td>
+                            <td>1,245</td>
                             <td class="actions">
                                 <button class="btn btn-view">Ver</button>
                                 <button class="btn btn-edit">Editar</button>
@@ -91,6 +97,7 @@ export default () => {
                             <td>Carlos Mendes</td>
                             <td>08/03/2025</td>
                             <td><span class="status-badge status-draft">Rascunho</span></td>
+                            <td>1,245</td>
                             <td class="actions">
                                 <button class="btn btn-view">Ver</button>
                                 <button class="btn btn-edit">Editar</button>
@@ -103,6 +110,7 @@ export default () => {
                             <td>Ana Santos</td>
                             <td>05/03/2025</td>
                             <td><span class="status-badge status-published">Publicado</span></td>
+                            <td>1,245</td>
                             <td class="actions">
                                 <button class="btn btn-view">Ver</button>
                                 <button class="btn btn-edit">Editar</button>
@@ -115,6 +123,7 @@ export default () => {
                             <td>Rafael Costa</td>
                             <td>03/03/2025</td>
                             <td><span class="status-badge status-scheduled">Agendado</span></td>
+                            <td>1,245</td>
                             <td class="actions">
                                 <button class="btn btn-view">Ver</button>
                                 <button class="btn btn-edit">Editar</button>
@@ -133,6 +142,24 @@ export default () => {
                 <div class="pagination-item">4</div>
                 <div class="pagination-item">▶</div>
             </div>
+
+            <!-- MODAL DE CONFIRMAÇÃO DE EXCLUSÃO -->
+    <div id="modalDelete" class="modal-backdrop" style="display: none;">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">Confirmar Exclusão</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Tem certeza que deseja excluir este artigo ?</p>
+                <p>Esta ação não pode ser desfeita.</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary">Cancelar</button>
+                <button id="excluir" class="btn btn-delete">Sim, Excluir</button>
+            </div>
+        </div>
+    </div>
         `
     container.innerHTML = template
 
@@ -143,6 +170,9 @@ export default () => {
     })
     btnView(container)
     btnEdit(container)
+    openModal(container)
+    setActiveSection('dashboard-section')
+
+    
     return container
-        
 }
