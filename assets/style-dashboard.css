@@ -749,6 +749,219 @@ input:checked + .toggle-slider:before {
     gap: 10px;
 }
 
+/* tab conteudo */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    text-decoration: none;
+}
+
+body {
+    background-color: var(--off-white);
+    color: var(--dark);
+}
+
+.main-content {
+    margin-left: 250px;
+    padding: 20px;
+    padding-top: 80px;
+}
+
+.dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.page-title {
+    font-size: 24px;
+    color: var(--dark);
+}
+
+.action-button {
+    background-color: var(--orange);
+    color: var(--white);
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: background-color 0.3s;
+}
+
+.tab-container {
+    margin-bottom: 30px;
+}
+
+.tabs {
+    display: flex;
+    border-bottom: 1px solid #ddd;
+}
+
+.tab {
+    padding: 12px 24px;
+    cursor: pointer;
+    font-weight: 500;
+    border-bottom: 3px solid transparent;
+    transition: border-color 0.3s;
+}
+
+.tab.active {
+    border-bottom-color: var(--orange);
+    color: var(--orange);
+}
+
+.form-container {
+    background-color: var(--white);
+    border-radius: 8px;
+    padding: 30px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    max-width: 100%;
+    margin: 0 auto;
+}
+
+.form-title {
+    color: var(--dark);
+    font-size: 24px;
+    margin-bottom: 30px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #eee;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--dark);
+    font-weight: 500;
+}
+
+.form-control {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    transition: border-color 0.3s;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid #eee;
+}
+
+.btn {
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: bold;
+    cursor: pointer;
+    border: none;
+    transition: background-color 0.3s;
+}
+
+.btn-secondary {
+    background-color: var(--off-white);
+    color: var(--dark);
+    border: 1px solid #ddd;
+}
+
+.btn-primary {
+    background-color: var(--orange);
+    color: var(--white);
+}
+
+/* Estilos específicos para o editor */
+#editor-container {
+    height: 400px;
+    margin-bottom: 20px;
+}
+
+.ql-toolbar {
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    border-color: #ddd !important;
+}
+
+.ql-container {
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 4px;
+    border-color: #ddd !important;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 16px;
+}
+
+.editor-options {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.word-count {
+    color: #666;
+    font-size: 14px;
+    margin-top: 10px;
+}
+
+.media-buttons {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.media-btn {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: var(--white);
+    color: var(--dark);
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.3s;
+}
+
+.media-btn:hover {
+    background-color: var(--off-white);
+}
+
+.editor-help {
+    margin-top: 15px;
+    background-color: var(--off-white);
+    padding: 15px;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.editor-help h4 {
+    margin-bottom: 10px;
+    color: var(--purple);
+}
+
+.editor-help ul {
+    padding-left: 20px;
+}
+
+.editor-help li {
+    margin-bottom: 5px;
+}
+
 /* Responsividade */
 @media (max-width: 768px) {
     .header-content {
