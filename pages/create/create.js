@@ -5,11 +5,11 @@ import {initQuillEditor} from "../../utils/editorQuill.js"
 export default () => {
     const container = document.createElement('div')
 
-    const template = `
-        
+    // Template do cabeçalho com as tabs
+    const headerTemplate = `
         <div class="dashboard-header">
             <h2 class="page-title">Criar Novo Artigo</h2>
-            <div id= "btn-back" class="action-button" style="background-color: #666; user-select: none;">
+            <div id="btn-back" class="action-button" style="background-color: #666; user-select: none;">
                 Voltar para Lista
             </div>
         </div>
@@ -21,6 +21,22 @@ export default () => {
                 <div id="tab-seo" class="tab" data-container="seo-container">Imagens & SEO</div>
                 <div id="tab-config" class="tab" data-container="config-container">Configurações</div>
             </div>
+            <div class="tab-content">
+                ${infoBasicaTemplate}
+                ${conteudoTemplate}
+                ${seoTemplate}
+            </div>
+        </div>
+    `
+
+    const infoBasicaTemplate = `
+        
+        <div class="dashboard-header">
+            <h2 class="page-title">Criar Novo Artigo</h2>
+            <div id= "btn-back" class="action-button" style="background-color: #666; user-select: none;">
+                Voltar para Lista
+            </div>
+        </div>
             
             <div id="info-container" class="form-container active">
                 <h3 class="form-title">Detalhes do Artigo</h3>
@@ -98,10 +114,10 @@ export default () => {
                     <button class="btn btn-primary">Salvar Artigo</button>
                 </div>
             </div>
-        </div>
+        </div>       
+    `
 
-
-         <div id="editor-container" class="form-container">
+    const conteudoTemplate = `<div id="editor-container" class="form-container">
                 <h3 class="form-title">Editor de Conteúdo</h3>
                 
                 <div class="form-group">
@@ -159,10 +175,9 @@ export default () => {
                     <button class="btn btn-primary" id="btn-tab-next">Próximo: Imagens & SEO</button>
                 </div>
             </div>
-        </div>
+        </div>`
 
-
-        <div id="tab-seo" class="seo-container">
+    const seoTemplate = ` <div id="tab-seo" class="seo-container">
             <h3 class="form-title">Imagens e Otimização para Buscadores</h3>
             
             <!-- Seção de Galeria de Imagens -->
@@ -355,43 +370,18 @@ export default () => {
                 <button class="btn btn-secondary">Cancelar</button>
                 <button class="btn btn-primary">Salvar Alterações</button>
             </div>
-        </div>
+        </div>`
+        
+    const fullTemplate = `${headerTemplate}
+    ${infoBasicaTemplate}
+    ${conteudoTemplate}
+    ${seoTemplate}
+    </div></div>
     `
-    container.innerHTML = template
+
+    container.innerHTML = fullTemplate
     
     backToList(container)
     
-    // Adiciona navegação das tabs
-    const tabs = container.querySelectorAll('.tab')
-    tabs.forEach(tab => {
-        tab.addEventListener('click', () => {
-
-            tabs.forEach(t => t.classList.remove('active'))
-            tab.classList.add('active')
-            
-            // Esconde todos os containers
-            const containers = container.querySelectorAll('.form-container')
-            containers.forEach(c => c.classList.remove('active'))
-            
-            // Mostra o container selecionado
-            const containerId = tab.getAttribute('data-container')
-            const selectedContainer = container.querySelector(`#${containerId}`)
-            if (selectedContainer) {
-                selectedContainer.classList.add('active')
-            }
-        })
-    })
-
-    // Adiciona evento para o botão próximo
-    const btnNext = container.querySelector('#btn-tab-next')
-    if (btnNext) {
-        btnNext.addEventListener('click', () => {
-            const seoTab = container.querySelector('#tab-seo')
-            if (seoTab) {
-                seoTab.click()
-            }
-        })
-    }
-
-    return container    
+    return container   
 }
