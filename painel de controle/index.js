@@ -7,36 +7,48 @@ import categorias from "../../sidebar/categorias.js"
 const main = document.getElementById("root")
 
 const handRoute = () => {
-        switch(window.location.hash) {
-            case "":
-                main.innerHTML = ""
-                main.appendChild(home())
-                break
-            case "#/criarArtigo":
+    const hash = window.location.hash
+
+    switch(hash) {
+        case "":
+            main.innerHTML = ""
+            main.appendChild(home())
+            break
+        case "#/criarArtigo":
+            main.innerHTML = ""
+            main.appendChild(create())
+            break
+        case "#/editarArtigo":
+            main.innerHTML = ""
+            main.appendChild(update())
+            break
+        case "#/verArtigo":
+            main.innerHTML = ""
+            main.appendChild(readArticle())
+            break
+        case "#/categorias":
+            main.innerHTML = ""
+            main.appendChild(categorias())
+            break
+        default:
+            // Se estiver nas tabs de conteúdo, mantém na página de criação
+            if (hash.includes('#/conteudo/')) {
                 main.innerHTML = ""
                 main.appendChild(create())
-                break
-            case "#/editarArtigo":
-                main.innerHTML = ""
-                main.appendChild(update())
-                break
-            case "#/verArtigo":
-                main.innerHTML = ""
-                main.appendChild(readArticle())
-                break
-            case "#/categorias":
-                main.innerHTML = ""
-                main.appendChild(categorias())
-                break
-
-            default:
-                main.innerHTML = ""
-                main.appendChild(home())
-        }
+                return
+            }
+            // Caso contrário, vai para home
+            main.innerHTML = ""
+            main.appendChild(home())
+    }
 }
 
+// Evento de carregamento inicial
 window.addEventListener("load", () => {
     handRoute()
 })
 
-window.addEventListener("hashchange", handRoute)
+// Evento de mudança de hash
+window.addEventListener("hashchange", () => {
+    handRoute()
+})

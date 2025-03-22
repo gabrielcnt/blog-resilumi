@@ -803,6 +803,7 @@ body {
 .tabs {
     display: flex;
     border-bottom: 1px solid #ddd;
+    user-select: none;
 }
 
 .tab {
@@ -960,6 +961,14 @@ body {
 
 .editor-help li {
     margin-bottom: 5px;
+}
+
+.form-container {
+    display: none; /* Esconde todos os containers por padrão */
+}
+
+.form-container.active {
+    display: block; /* Mostra apenas o container ativo */
 }
 
 /* Responsividade */
