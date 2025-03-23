@@ -1,5 +1,5 @@
 
-export const infoBasicaTemplate = `<div id="info-container" class="form-container">
+export const infoBasicaCreate = `<div id="info-container" class="form-container">
             <h3 class="form-title">Detalhes do Artigo</h3>
             
             <div class="form-group">

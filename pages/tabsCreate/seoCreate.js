@@ -1,4 +1,4 @@
-export const seoTemplate = `<div id="seo-container" class="form-container">
+export const seoCreate = `<div id="seo-container" class="form-container">
             <h3 class="form-title">Imagens e Otimização para Buscadores</h3>
             
             <!-- Seção de Galeria de Imagens -->

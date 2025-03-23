@@ -1,7 +1,7 @@
 import { backToList } from "../../utils/navigation.js"
 import { setActiveTab, initTabNavigation } from "../../utils/tabNavigation.js"
-import {infoBasicaTemplate} from "./tabs/infoBasicaTemplate.js"
-import {seoTemplate} from "./tabs/seoTemplate.js"
+import {infoBasicaCreate} from "../tabsCreate/infoBasicaCreate.js"
+import {seoCreate} from "../tabsCreate/seoCreate.js"
 
 export default () => {
     const container = document.createElement('div')
@@ -22,8 +22,8 @@ export default () => {
                 <div id="tab-config" class="tab" data-container="config-container">Configurações</div>
             </div>
             <div class="tab-content">
-                ${infoBasicaTemplate}
-                ${seoTemplate}
+                ${infoBasicaCreate}
+                ${seoCreate}
             </div>
         </div>`
     container.innerHTML = headerTemplate
@@ -34,19 +34,3 @@ export default () => {
     
     return container   
 }
-
-// // Adiciona event listeners para as tabs
-// const tabs = container.querySelectorAll('.tab')
-// tabs.forEach(tab => {
-//     tab.addEventListener('click', () => {
-//         const tabId = tab.id
-//         setActiveTab(tabId)
-//     })
-// })
-
-// backToList(container)
-
-// // Ativa a primeira tab após o DOM estar pronto
-// setTimeout(() => {
-//     setActiveTab('tab-info')
-// }, 0)
