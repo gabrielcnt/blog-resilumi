@@ -25,11 +25,7 @@ export const setActiveTab = (tabId) => {
 
 // Adiciona event listeners para as tabs
 export const initTabNavigation = (container) => {
-    // Ativa a primeira tab após o DOM estar pronto
-    setTimeout(() => {
-        setActiveTab('tab-info')
-    }, 0)
-
+    
     const tabs = container.querySelectorAll('.tab')
     tabs.forEach(tab => {
         tab.addEventListener('click', (event) => {
@@ -64,32 +60,17 @@ window.addEventListener('popstate', () => {
     }
 })
 
-// Adiciona evento load para manter estado após refresh
+// Definir a aba com base no hash ao carregar a página
 window.addEventListener('load', () => {
-    // Pega o caminho completo da URL
     const path = window.location.pathname + window.location.hash
-    
-    // Verifica se está na página de criação
-    if (path.includes('/create') || path.includes('/conteudo')) {
+    if (path.includes('/create') || path.includes('/editarArtigo') || path.includes('/conteudo')) {
         const hash = window.location.hash
-        switch(hash) {
-            case '#/conteudo/info':
-                setActiveTab('tab-info')
-                break
-            case '#/conteudo/editor':
-                setActiveTab('tab-editor')
-                break
-            case '#/conteudo/seo':
-                setActiveTab('tab-seo')
-                break
-            case '#/conteudo/config':
-                setActiveTab('tab-config')
-                break
-            default:
-                setActiveTab('tab-info')
+        if (hash.startsWith('#/conteudo/')) {
+            const tabId = `tab-${hash.split('/')[2]}`
+            setActiveTab(tabId)
+        } else {
+            setActiveTab('tab-info')
         }
-        // Previne redirecionamento
-        event.preventDefault()
     }
 })
 

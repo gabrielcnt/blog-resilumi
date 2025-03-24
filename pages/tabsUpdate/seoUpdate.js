@@ -1,4 +1,4 @@
-export const seoCreate = `<div id="seo-container" class="form-container">
+export const seoUpdate = `<div id="seo-container" class="form-container">
             <h3 class="form-title">Imagens e Otimização para Buscadores</h3>
             
             <!-- Seção de Galeria de Imagens -->
@@ -189,6 +189,6 @@ export const seoCreate = `<div id="seo-container" class="form-container">
             <!-- Ações do formulário -->
             <div class="form-actions">
                 <button class="btn btn-secondary">Cancelar</button>
-                <button class="btn btn-primary">Salvar</button>
+                <button class="btn btn-primary">Salvar Alterações</button>
             </div>
         </div>`

@@ -1,5 +1,6 @@
 import { backToList } from "../../utils/navigation.js"
-import {infoBasicaUpdate} from "./tabsUpdate/infoBasicaUpdate.js"
+import {infoBasicaUpdate} from "../tabsUpdate/infoBasicaUpdate.js"
+import {seoUpdate} from "../tabsUpdate/seoUpdate.js"
 import { setActiveTab, initTabNavigation } from "../../utils/tabNavigation.js"
 
 
@@ -23,12 +24,12 @@ export default () => {
             </div>
             <div class="tab-content">
                 ${infoBasicaUpdate}
+                ${seoUpdate}
                 
             </div>
         </div>`
 
         container.innerHTML = template
-        backToList(container)
         backToList(container)
         initTabNavigation(container)
         setActiveTab('tab-info')

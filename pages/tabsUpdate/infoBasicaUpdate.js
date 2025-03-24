@@ -1,4 +1,5 @@
-export const infoBasicaUpdate = `<div class="form-container">
+
+export const infoBasicaUpdate = `<div id="info-container" class="form-container">
                 <h3 class="form-title">Detalhes do Artigo</h3>
                 
                 <div class="form-group">
