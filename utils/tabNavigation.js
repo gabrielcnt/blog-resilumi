@@ -1,78 +1,85 @@
+// Função para ativar a aba correta
 export const setActiveTab = (tabId) => {
-    // Remove todas as classes active primeiro
-    const tabs = document.querySelectorAll('.tab')
-    tabs.forEach(tab => {
-        tab.classList.remove('active')
-    })
+    // Remove todas as classes "active"
+    document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'))
+    document.querySelectorAll('.form-container').forEach(container => container.classList.remove('active'))
 
-    const containers = document.querySelectorAll('.form-container')
-    containers.forEach(container => {
-        container.classList.remove('active')
-    })
-
-    // Ativa a tab selecionada
-    const selectedTab = document.querySelector(`#${tabId}`)
+    // Ativa a aba e o container corretos
+    const selectedTab = document.getElementById(tabId)
     if (selectedTab) {
         selectedTab.classList.add('active')
         const containerId = selectedTab.getAttribute('data-container')
-        const container = document.querySelector(`#${containerId}`)
-        if(container) {
-            container.classList.add('active')
-        }
+        const container = document.getElementById(containerId)
+        if (container) container.classList.add('active')
     }
 }
 
-
-// Adiciona event listeners para as tabs
+// Inicializa a navegação entre as abas
 export const initTabNavigation = (container) => {
-    
     const tabs = container.querySelectorAll('.tab')
+
+    // Adiciona evento de clique nas abas
     tabs.forEach(tab => {
         tab.addEventListener('click', (event) => {
             event.preventDefault()
             const tabId = tab.id
             setActiveTab(tabId)
-            
-            const hash = `#/conteudo/${tabId.replace('tab-', '')}`
-            history.pushState(null, '', hash)
+
+            // Atualiza o hash na URL conforme a operação (criar ou editar)
+            const currentHash = window.location.hash
+            let newHash
+            if (currentHash.includes('criarArtigo')) {
+                newHash = `#/criarArtigo/${tabId.replace('tab-', '')}`
+            } else if (currentHash.includes('editarArtigo')) {
+                newHash = `#/editarArtigo/${tabId.replace('tab-', '')}`
+            }
+            history.pushState(null, '', newHash)
         })
     })
 }
 
-// Adiciona evento de mudança de hash
+// Controla a navegação com os botões do navegador (voltar/avançar)
 window.addEventListener('popstate', () => {
     const hash = window.location.hash
-    switch(hash) {
-        case '#/conteudo/info':
-            setActiveTab('tab-info')
-            break
-        case '#/conteudo/editor':
-            setActiveTab('tab-editor')
-            break
-        case '#/conteudo/seo':
-            setActiveTab('tab-seo')
-            break
-        case '#/conteudo/config':
-            setActiveTab('tab-config')
-            break
-        default:
-            setActiveTab('tab-info')
+    const segments = hash.split('/')
+    const lastSegment = segments[segments.length - 1]
+
+    if (hash.includes('criarArtigo/') || hash.includes('editarArtigo/')) {
+        setActiveTab(`tab-${lastSegment}`)
     }
 })
 
-// Definir a aba com base no hash ao carregar a página
+// Carrega a aba correta ao carregar a página
 window.addEventListener('load', () => {
-    const path = window.location.pathname + window.location.hash
-    if (path.includes('/create') || path.includes('/editarArtigo') || path.includes('/conteudo')) {
-        const hash = window.location.hash
-        if (hash.startsWith('#/conteudo/')) {
-            const tabId = `tab-${hash.split('/')[2]}`
-            setActiveTab(tabId)
+    const hash = window.location.hash
+    let tabName = 'info' // Aba padrão
+
+    // Identifica a operação (criação ou edição) e a aba atual
+    if (hash.includes('criarArtigo') || hash.includes('editarArtigo')) {
+        const segments = hash.split('/')
+        const operation = segments[1] // criarArtigo ou editarArtigo
+
+        // Se não tiver aba definida, redireciona para "info"
+        if (segments.length < 3) {
+            history.replaceState(null, '', `#/${operation}/info`)
         } else {
-            setActiveTab('tab-info')
+            tabName = segments[segments.length - 1]
+        }
+
+        // Recarrega o componente correto
+        const main = document.getElementById('root')
+        main.innerHTML = ''
+
+        if (operation === 'criarArtigo') {
+            import('../pages/create/create.js').then(module => {
+                main.appendChild(module.default())
+                setActiveTab(`tab-${tabName}`)
+            })
+        } else if (operation === 'editarArtigo') {
+            import('../pages/update/update.js').then(module => {
+                main.appendChild(module.default())
+                setActiveTab(`tab-${tabName}`)
+            })
         }
     }
 })
-
-// Remove evento popstate antigo se existir
-window.removeEventListener('popstate', null)

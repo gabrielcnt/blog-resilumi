@@ -30,7 +30,10 @@ export default () => {
     
     backToList(container)
     initTabNavigation(container)
-    setActiveTab('tab-info')
+
+    // Define a URL inicial com a tab info
+    history.pushState(null, '', '#/criarArtigo/info')
+setActiveTab('tab-info')
     
     return container   
 }
