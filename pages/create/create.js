@@ -1,7 +1,6 @@
 import { backToList } from "../../utils/navigation.js"
 import { setActiveTab, initTabNavigation } from "../../utils/tabNavigation.js"
-import {infoBasicaCreate} from "../tabsCreate/infoBasicaCreate.js"
-import {seoCreate} from "../tabsCreate/seoCreate.js"
+
 
 export default () => {
     const container = document.createElement('div')
@@ -16,14 +15,10 @@ export default () => {
         
         <div class="tab-container">
             <div class="tabs">
-                <div id="tab-info" class="tab active" data-container="info-container">Informações Básicas</div>
-                <div id="tab-editor" class="tab" data-container="editor-container">Conteúdo</div>
-                <div id="tab-seo" class="tab" data-container="seo-container">Imagens & SEO</div>
-                <div id="tab-config" class="tab" data-container="config-container">Configurações</div>
-            </div>
-            <div class="tab-content">
-                ${infoBasicaCreate}
-                ${seoCreate}
+                <a href"#/criarArtigo/info" id="tab-info" class="tab active">Informações Básicas</a>
+                <a href"#/criarArtigo/editor" id="tab-editor" class="tab">Conteúdo</a>
+                <a href"#/criarArtigo/seo" id="tab-seo" class="tab">Imagens & SEO</a>
+                <a href"#/criarArtigo/config" id="tab-config" class="tab">Configurações</a>
             </div>
         </div>`
     container.innerHTML = headerTemplate
