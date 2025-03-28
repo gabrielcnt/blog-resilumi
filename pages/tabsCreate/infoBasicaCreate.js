@@ -1,5 +1,5 @@
 
-export const infoBasicaCreate = `<div id="info-container" class="form-container">
+export const infoBasicaCreate = `<div id="info-container active" class="form-container">
             <h3 class="form-title">Detalhes do Artigo</h3>
             
             <div class="form-group">
@@ -75,3 +75,4 @@ export const infoBasicaCreate = `<div id="info-container" class="form-container"
                 <button class="btn btn-primary">Salvar Artigo</button>
             </div>
         </div>`
+

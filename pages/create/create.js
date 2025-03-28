@@ -1,5 +1,7 @@
 import { backToList } from "../../utils/navigation.js"
 import { setActiveTab, initTabNavigation } from "../../utils/tabNavigation.js"
+import {infoBasicaCreate} from "../tabsCreate/infoBasicaCreate.js"
+import {seoCreate} from "../tabsCreate/seoCreate.js"
 
 
 export default () => {
@@ -15,20 +17,23 @@ export default () => {
         
         <div class="tab-container">
             <div class="tabs">
-                <a href"#/criarArtigo/info" id="tab-info" class="tab active">Informações Básicas</a>
-                <a href"#/criarArtigo/editor" id="tab-editor" class="tab">Conteúdo</a>
-                <a href"#/criarArtigo/seo" id="tab-seo" class="tab">Imagens & SEO</a>
-                <a href"#/criarArtigo/config" id="tab-config" class="tab">Configurações</a>
+                <div id="tab-info" class="tab active" data-container="info-container">Informações Básicas</div>
+                <div id="tab-editor" class="tab" data-container="editor-container">Conteúdo</div>
+                <div id="tab-seo" class="tab" data-container="seo-container">Imagens & SEO</div>
+                <div id="tab-config" class="tab" data-container="config-container">Configurações</div>
             </div>
+
+            <div class="tab-content">
+                ${infoBasicaCreate}
+                ${seoCreate}
+            </div>
+
+
         </div>`
     container.innerHTML = headerTemplate
     
     backToList(container)
     initTabNavigation(container)
 
-    // Define a URL inicial com a tab info
-    history.pushState(null, '', '#/criarArtigo/info')
-setActiveTab('tab-info')
-    
     return container   
 }
