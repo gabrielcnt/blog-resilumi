@@ -32,8 +32,10 @@ export default () => {
         </div>`
     container.innerHTML = headerTemplate
     
-    backToList(container)
-    initTabNavigation(container)
-
+    setTimeout(() => {
+        backToList(container)
+        initTabNavigation(container)
+        setActiveTab('tab-info') // Garante que a primeira tab esteja ativa
+    }, 0)
     return container   
 }
