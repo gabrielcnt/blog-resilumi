@@ -893,7 +893,7 @@ body {
 
 /* Estilos específicos para o editor */
 #editor-container {
-    height: 400px;
+    height: 500px;
     margin-bottom: 20px;
 }
 
@@ -974,6 +974,15 @@ body {
 
 .form-container.active {
     display: block; /* Mostra apenas o container ativo */
+}
+
+.editor-content {
+    
+    height: 600px;
+}
+
+#editor-container {
+    display: none;
 }
 
 /* Responsividade */

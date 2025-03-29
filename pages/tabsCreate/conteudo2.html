@@ -36,53 +36,7 @@
             padding-top: 80px;
         }
         
-        .dashboard-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
         
-        .page-title {
-            font-size: 24px;
-            color: var(--dark);
-        }
-        
-        .action-button {
-            background-color: var(--orange);
-            color: var(--white);
-            border: none;
-            padding: 10px 20px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: background-color 0.3s;
-        }
-        
-        .tab-container {
-            margin-bottom: 30px;
-        }
-        
-        .tabs {
-            display: flex;
-            border-bottom: 1px solid #ddd;
-        }
-        
-        .tab {
-            padding: 12px 24px;
-            cursor: pointer;
-            font-weight: 500;
-            border-bottom: 3px solid transparent;
-            transition: border-color 0.3s;
-        }
-        
-        .tab.active {
-            border-bottom-color: var(--orange);
-            color: var(--orange);
-        }
         
         .form-container {
             background-color: var(--white);
@@ -231,20 +185,6 @@
 </head>
 <body>
     <main class="main-content" id="create-article-page">
-        <div class="dashboard-header">
-            <h2 class="page-title">Criar Novo Artigo</h2>
-            <a href="dashboard.html" class="action-button" style="background-color: #666;">
-                Voltar para Lista
-            </a>
-        </div>
-        
-        <div class="tab-container">
-            <div class="tabs">
-                <div class="tab" onclick="switchTab('info')">Informações Básicas</div>
-                <div class="tab active" onclick="switchTab('content')">Conteúdo</div>
-                <div class="tab" onclick="switchTab('seo')">Imagens & SEO</div>
-                <div class="tab" onclick="switchTab('settings')">Configurações</div>
-            </div>
             
             <div class="form-container">
                 <h3 class="form-title">Editor de Conteúdo</h3>

@@ -1,6 +1,19 @@
 export const initQuillEditor = (container) => {
+    // Verificar se o container existe
+    if (!container) {
+        console.error('Container não foi fornecido');
+        return null;
+    }
+
+    // Verificar se o elemento do editor existe dentro do container
+    const editorElement = container.querySelector('#quill-editor');
+    if (!editorElement) {
+        console.error('Elemento #quill-editor não encontrado dentro do container');
+        return null;
+    }
+
     // Inicialização do Editor Quill
-    const quill = new Quill('#quill-editor', {
+    const quill = new Quill(editorElement, {
         modules: {
             toolbar: [
                 [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
@@ -32,9 +45,6 @@ export const initQuillEditor = (container) => {
     
     // Adiciona eventos aos botões de mídia
     const addImageBtn = container.querySelector('#add-image');
-    const addVideoBtn = container.querySelector('#add-video');
-    const addCodeBtn = container.querySelector('#add-code');
-    
     if (addImageBtn) {
         addImageBtn.addEventListener('click', () => {
             const url = prompt('Insira o URL da imagem:');
@@ -45,6 +55,7 @@ export const initQuillEditor = (container) => {
         });
     }
     
+    const addVideoBtn = container.querySelector('#add-video');
     if (addVideoBtn) {
         addVideoBtn.addEventListener('click', () => {
             const url = prompt('Insira o URL do vídeo:');
@@ -55,6 +66,7 @@ export const initQuillEditor = (container) => {
         });
     }
     
+    const addCodeBtn = container.querySelector('#add-code');
     if (addCodeBtn) {
         addCodeBtn.addEventListener('click', () => {
             const code = prompt('Insira seu código:');
