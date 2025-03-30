@@ -1,7 +1,10 @@
-import { backToList } from "../../utils/navigation.js"
+import {backToList} from "../../utils/navigation.js"
 import {infoBasicaUpdate} from "../tabsUpdate/infoBasicaUpdate.js"
+import {editorUpdate} from "../tabsUpdate/conteudoUpdate.js"
 import {seoUpdate} from "../tabsUpdate/seoUpdate.js"
-import { setActiveTab, initTabNavigation } from "../../utils/tabNavigation.js"
+import {configUpdate} from "../tabsUpdate/configUpdate.js"
+import {setActiveTab, initTabNavigation} from "../../utils/tabNavigation.js"
+import {initQuillEditor} from "../../utils/editorQuill.js"
 
 
 export default () => {
@@ -24,14 +27,55 @@ export default () => {
             </div>
             <div class="tab-content">
                 ${infoBasicaUpdate}
+                ${editorUpdate}
                 ${seoUpdate}
+                ${configUpdate}
                 
             </div>
         </div>`
 
         container.innerHTML = template
-        backToList(container)
-        initTabNavigation(container)
-        setActiveTab('tab-info')
+        let editorInitialized = false;
+        
+            setTimeout(() => {
+                backToList(container)
+                initTabNavigation(container)
+                
+                // Configura o MutationObserver para monitorar mudanças no DOM
+                const observer = new MutationObserver((mutations) => {
+                    mutations.forEach((mutation) => {
+                        if (mutation.type === 'childList' && !editorInitialized) {
+                            const editorContainer = document.querySelector('#editor-container')
+                            if (editorContainer) {
+                                initQuillEditor(editorContainer)
+                                editorInitialized = true
+                                console.log('Editor inicializado com sucesso')
+                                observer.disconnect() // Para de observar após inicialização
+                            }
+                        }
+                    })
+                })
+        
+                // Configura o que observar
+                observer.observe(document.body, {
+                    childList: true,
+                    subtree: true
+                })
+                
+                // Inicializa o editor quando a tab for clicada
+                document.getElementById('tab-editor').addEventListener('click', () => {
+                    if (!editorInitialized) {
+                        const editorContainer = document.querySelector('#editor-container')
+                        if (editorContainer) {
+                            initQuillEditor(editorContainer)
+                            editorInitialized = true
+                            console.log('Editor inicializado com sucesso')
+                        } else {
+                            console.error('Container do editor não encontrado')
+                        }
+                    }
+                })
+            }, 0)
+    
         return container
 }

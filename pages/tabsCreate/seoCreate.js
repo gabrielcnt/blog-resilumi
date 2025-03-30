@@ -188,7 +188,7 @@ export const seoCreate = `<div id="seo-container" class="form-container">
 
             <!-- Ações do formulário -->
             <div class="form-actions">
-                <button class="btn btn-secondary">Cancelar</button>
-                <button class="btn btn-primary">Salvar</button>
+                <button class="btn btn-secondary">Voltar: Conteúdo</button>
+                <button class="btn btn-primary">Próximo: Configurações</button>
             </div>
         </div>`

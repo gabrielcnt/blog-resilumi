@@ -3,6 +3,7 @@ import create from "../pages/create/create.js"
 import update from "../pages/update/update.js"
 import readArticle from "../pages/read/readArticle.js";
 import categorias from "../../sidebar/categorias.js"
+import settings from "../../sidebar/configuracoes.js"
 
 const main = document.getElementById("root")
 
@@ -29,6 +30,10 @@ const handRoute = () => {
         case "#/categorias":
             main.innerHTML = ""
             main.appendChild(categorias())
+            break
+        case "#/configuracoes":
+            main.innerHTML = ""
+            main.appendChild(settings())
             break
         default:
             // Se estiver nas tabs de conteúdo, mantém na página de criação

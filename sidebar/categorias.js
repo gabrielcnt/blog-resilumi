@@ -56,7 +56,6 @@ export default () => {
                             <td><span class="status-badge status-published">Ativo</span></td>
                             <td>Sim</td>
                             <td class="actions">
-                                <button class="btn btn-view">Ver</button>
                                 <button class="btn btn-edit">Editar</button>
                                 <button class="btn btn-delete">Excluir</button>
                             </td>
@@ -68,7 +67,6 @@ export default () => {
                             <td><span class="status-badge status-published">Ativo</span></td>
                             <td>Sim</td>
                             <td class="actions">
-                                <button class="btn btn-view">Ver</button>
                                 <button class="btn btn-edit">Editar</button>
                                 <button class="btn btn-delete">Excluir</button>
                             </td>
@@ -80,7 +78,6 @@ export default () => {
                             <td><span class="status-badge status-published">Ativo</span></td>
                             <td>Não</td>
                             <td class="actions">
-                                <button class="btn btn-view">Ver</button>
                                 <button class="btn btn-edit">Editar</button>
                                 <button class="btn btn-delete">Excluir</button>
                             </td>
@@ -92,7 +89,6 @@ export default () => {
                             <td><span class="status-badge status-published">Ativo</span></td>
                             <td>Não</td>
                             <td class="actions">
-                                <button class="btn btn-view">Ver</button>
                                 <button class="btn btn-edit">Editar</button>
                                 <button class="btn btn-delete">Excluir</button>
                             </td>
@@ -104,7 +100,6 @@ export default () => {
                             <td><span class="status-badge status-published">Ativo</span></td>
                             <td>Não</td>
                             <td class="actions">
-                                <button class="btn btn-view">Ver</button>
                                 <button class="btn btn-edit">Editar</button>
                                 <button class="btn btn-delete">Excluir</button>
                             </td>
@@ -116,7 +111,6 @@ export default () => {
                             <td><span class="status-badge status-published">Ativo</span></td>
                             <td>Não</td>
                             <td class="actions">
-                                <button class="btn btn-view">Ver</button>
                                 <button class="btn btn-edit">Editar</button>
                                 <button class="btn btn-delete">Excluir</button>
                             </td>
@@ -128,7 +122,6 @@ export default () => {
                             <td><span class="status-badge status-draft">Inativo</span></td>
                             <td>Não</td>
                             <td class="actions">
-                                <button class="btn btn-view">Ver</button>
                                 <button class="btn btn-edit">Editar</button>
                                 <button class="btn btn-delete">Excluir</button>
                             </td>
@@ -140,7 +133,6 @@ export default () => {
                             <td><span class="status-badge status-draft">Inativo</span></td>
                             <td>Não</td>
                             <td class="actions">
-                                <button class="btn btn-view">Ver</button>
                                 <button class="btn btn-edit">Editar</button>
                                 <button class="btn btn-delete">Excluir</button>
                             </td>
@@ -165,35 +157,37 @@ export default () => {
                         <button class="modal-close">&times;</button>
                     </div>
                     <div class="modal-body">
-                        <div class="form-group">
-                            <label for="category-name">Nome da Categoria</label>
-                            <input type="text" id="category-name" class="form-control" placeholder="Ex: Saúde Mental">
-                        </div>
-                        <div class="form-group">
-                            <label for="category-description">Descrição</label>
-                            <textarea id="category-description" class="form-control" placeholder="Descreva brevemente o propósito desta categoria"></textarea>
-                        </div>
-                        <div class="form-group">
-                            <div class="status-toggle">
-                                <span class="toggle-label">Status:</span>
-                                <label class="toggle-switch">
-                                    <input type="checkbox" checked>
-                                    <span class="toggle-slider"></span>
-                                </label>
-                                <span>Ativo</span>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <div class="status-toggle">
-                                <span class="toggle-label">Destaque:</span>
-                                <label class="toggle-switch">
-                                    <input type="checkbox">
-                                    <span class="toggle-slider"></span>
-                                </label>
-                                <span>Não</span>
-                            </div>
-                        </div>
-                    </div>
+    <div class="form-group">
+        <label for="category-name">Nome da Categoria</label>
+        <input type="text" id="category-name" class="form-control" placeholder="Ex: Saúde Mental">
+    </div>
+    <div class="form-group">
+        <label for="category-description">Descrição</label>
+        <textarea id="category-description" class="form-control" placeholder="Descreva brevemente o propósito desta categoria"></textarea>
+    </div>
+    <div class="form-group">
+        <div class="toggle-group">
+            <label class="toggle-label">
+                <div class="toggle-switch">
+                    <input type="checkbox" class="toggle-input" id="status-toggle" checked>
+                    <span class="toggle-slider"></span>
+                </div>
+                <span class="toggle-text">Status: Ativo</span>
+            </label>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="toggle-group">
+            <label class="toggle-label">
+                <div class="toggle-switch">
+                    <input type="checkbox" class="toggle-input" id="featured-toggle">
+                    <span class="toggle-slider"></span>
+                </div>
+                <span class="toggle-text">Destaque: Não</span>
+            </label>
+        </div>
+    </div>
+</div>
                     <div class="modal-footer">
                         <button class="btn btn-secondary">Cancelar</button>
                         <button class="btn btn-primary">Salvar</button>
@@ -202,6 +196,78 @@ export default () => {
             </div>`
 
     container.innerHTML = template
+
+    // Funcionalidade para abrir/fechar o modal
+    const newCategoryBtn = container.querySelector('.action-button')
+    const modalBackdrop = container.querySelector('.modal-backdrop')
+    const modalCloseBtn = container.querySelector('.modal-close')
+    const modalCancelBtn = container.querySelector('.btn-secondary')
+    const modalSaveBtn = container.querySelector('.btn-primary')
+    const toggleInputs = container.querySelectorAll('.toggle-switch input')
+
+    // Abrir modal
+    newCategoryBtn.addEventListener('click', () => {
+        modalBackdrop.style.display = 'flex'
+        // Limpar formulário
+        container.querySelector('#category-name').value = ''
+        container.querySelector('#category-description').value = ''
+        toggleInputs[0].checked = true // Status ativo por padrão
+        toggleInputs[1].checked = false // Destaque desativado por padrão
+        updateToggleLabels()
+    })
+
+    // Fechar modal
+    const closeModal = () => {
+        modalBackdrop.style.display = 'none'
+    }
+
+    modalCloseBtn.addEventListener('click', closeModal)
+    modalCancelBtn.addEventListener('click', closeModal)
+    modalBackdrop.addEventListener('click', (e) => {
+        if (e.target === modalBackdrop) closeModal()
+    })
+
+    // Atualizar labels dos toggles
+    const updateToggleLabels = () => {
+        toggleInputs.forEach(input => {
+            const toggleText = input.closest('.toggle-label').querySelector('.toggle-text')
+            if (input.id === 'status-toggle') {
+                toggleText.textContent = `Status: ${input.checked ? 'Ativo' : 'Inativo'}`
+            } else if (input.id === 'featured-toggle') {
+                toggleText.textContent = `Destaque: ${input.checked ? 'Sim' : 'Não'}`
+            }
+        })
+    }
+
+    // Event listeners para os toggles
+    toggleInputs.forEach(input => {
+        input.addEventListener('change', updateToggleLabels)
+    })
+
+    // Salvar categoria
+    modalSaveBtn.addEventListener('click', () => {
+        const categoryData = {
+            name: container.querySelector('#category-name').value,
+            description: container.querySelector('#category-description').value,
+            status: toggleInputs[0].checked ? 'Ativo' : 'Inativo',
+            featured: toggleInputs[1].checked
+        }
+
+        // Validação básica
+        if (!categoryData.name.trim()) {
+            alert('O nome da categoria é obrigatório')
+            return
+        }
+
+        // Aqui você pode adicionar a lógica para salvar no backend
+        console.log('Nova categoria:', categoryData)
+        
+        // Fecha o modal após salvar
+        closeModal()
+        
+        // Opcional: Atualizar a tabela com a nova categoria
+        // updateCategoriesTable()
+    })
 
     return container
 }

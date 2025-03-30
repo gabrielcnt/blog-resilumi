@@ -2,8 +2,9 @@ import { backToList } from "../../utils/navigation.js"
 import { setActiveTab, initTabNavigation } from "../../utils/tabNavigation.js"
 import {infoBasicaCreate} from "../tabsCreate/infoBasicaCreate.js"
 import {seoCreate} from "../tabsCreate/seoCreate.js"
-import { editorCreate } from "../tabsCreate/conteudo.js"
+import { editorCreate } from "../tabsCreate/conteudoCreate.js"
 import { initQuillEditor } from "../../utils/editorQuill.js"
+import {configCreate} from "../tabsCreate/configCreate.js"
 
 export default () => {
     const container = document.createElement('div')
@@ -28,6 +29,7 @@ export default () => {
                 ${infoBasicaCreate}
                 ${editorCreate}
                 ${seoCreate}
+                ${configCreate}
             </div>
 
 

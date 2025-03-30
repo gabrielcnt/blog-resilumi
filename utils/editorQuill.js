@@ -1,37 +1,60 @@
+
 export const initQuillEditor = (container) => {
-    // Verificar se o container existe
+    // Verificações iniciais
     if (!container) {
         console.error('Container não foi fornecido');
         return null;
     }
 
-    // Verificar se o elemento do editor existe dentro do container
     const editorElement = container.querySelector('#quill-editor');
     if (!editorElement) {
-        console.error('Elemento #quill-editor não encontrado dentro do container');
+        console.error('Elemento #quill-editor não encontrado');
         return null;
     }
 
-    // Inicialização do Editor Quill
+    // Toolbar customizada
+    const toolbarOptions = {
+        container: [
+            [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+            ['bold', 'italic', 'underline', 'strike'],
+            [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+            [{ 'indent': '-1'}, { 'indent': '+1' }],
+            [{ 'color': [] }, { 'background': [] }],
+            ['blockquote', 'code-block'],
+            ['link', 'image'],
+            ['clean']
+        ],
+        handlers: {
+            underline: function(value) {
+                this.quill.format('underline', !this.quill.getFormat().underline);
+            },
+            strike: function(value) {
+                this.quill.format('strike', !this.quill.getFormat().strike);
+            }
+        }
+    };
+
+    // Configuração do Quill com handlers customizados
     const quill = new Quill(editorElement, {
         modules: {
-            toolbar: [
-                [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-                ['bold', 'italic', 'underline', 'strike'],
-                [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-                [{ 'indent': '-1'}, { 'indent': '+1' }],
-                [{ 'color': [] }, { 'background': [] }],
-                ['blockquote', 'code-block'],
-                ['link', 'image'],
-                ['clean']
-            ]
+            toolbar: toolbarOptions
         },
-        placeholder: 'Comece a escrever seu artigo aqui...',
-        theme: 'snow'
+        theme: 'snow',
+        placeholder: 'Comece a escrever seu artigo aqui...'
     });
-    
-    // Contador de palavras e caracteres
-    quill.on('text-change', function() {
+
+    // Adiciona atalhos de teclado
+    quill.keyboard.addBinding({ key: 'U', shortKey: true }, function(range) {
+        this.quill.format('underline', !this.quill.getFormat().underline);
+    });
+
+    quill.keyboard.addBinding({ key: 'S', shortKey: true, shiftKey: true }, function(range) {
+        this.quill.format('strike', !this.quill.getFormat().strike);
+    });
+
+
+    // Contador de palavras
+    quill.on('text-change', () => {
         const text = quill.getText();
         const wordCount = text.trim() === '' ? 0 : text.trim().split(/\s+/).length;
         const charCount = text.length - 1;
@@ -42,8 +65,8 @@ export const initQuillEditor = (container) => {
         if (wordCountElement) wordCountElement.textContent = wordCount;
         if (charCountElement) charCountElement.textContent = charCount;
     });
-    
-    // Adiciona eventos aos botões de mídia
+
+    // Botões de mídia
     const addImageBtn = container.querySelector('#add-image');
     if (addImageBtn) {
         addImageBtn.addEventListener('click', () => {
@@ -54,7 +77,6 @@ export const initQuillEditor = (container) => {
             }
         });
     }
-    
     const addVideoBtn = container.querySelector('#add-video');
     if (addVideoBtn) {
         addVideoBtn.addEventListener('click', () => {

@@ -72,7 +72,7 @@ export const infoBasicaCreate = `<div id="info-container" class="form-container"
             
             <div class="form-actions">
                 <button class="btn btn-secondary">Cancelar</button>
-                <button class="btn btn-primary">Salvar Artigo</button>
+                <button class="btn btn-primary">Próximo: Conteúdo</button>
             </div>
         </div>`
 

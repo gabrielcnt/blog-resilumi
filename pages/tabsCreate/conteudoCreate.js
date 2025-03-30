@@ -54,7 +54,7 @@ export const editorCreate = `<div id="editor-container" class="form-container">
                 </div>
                 
                 <div class="form-actions">
-                    <button class="btn btn-secondary">Salvar como Rascunho</button>
-                    <button class="btn btn-primary" id="btn-tab-next">Próximo: Imagens & SEO</button>
+                    <button type="button" class="btn btn-secondary">Voltar: Informações</button>
+                    <button type="button" class="btn btn-primary" id="btn-tab-next">Próximo: Imagens & SEO</button>
                 </div>
             </div>`
