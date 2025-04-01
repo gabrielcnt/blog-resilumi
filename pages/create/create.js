@@ -35,6 +35,32 @@ export default () => {
 
         </div>`
     container.innerHTML = headerTemplate
+
+    // Função para cancelar e voltar para a dashboard ou lista de artigos
+    window.cancelForm = () => {
+        // Utilize sua função de navegação, por exemplo:
+        backToList(container)
+    }
+
+    // Função para salvar os dados da aba "Informações Básicas" e avançar para a próxima aba
+    window.saveInfoBasica = () => {
+        try {
+            // Coleta os dados da aba de informações básicas
+            const basicData = getInfoBasicaData()
+            
+            // Armazena os dados em um objeto central (pode ser em window.articleData ou outro state manager)
+            window.articleData = {
+                ...window.articleData,
+                ...basicData
+            }
+            
+            // Navega para a aba de conteúdo
+            // Aqui, usando o setActiveTab para mudar a tab ativa (ou acionando o clique na tab correspondente)
+            setActiveTab('tab-editor', container)
+        } catch (error) {
+            alert(error.message)
+        }
+    }
     
     let editorInitialized = false;
 
