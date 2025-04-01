@@ -70,3 +70,7 @@ export const infoBasicaCreate = `
         </div>
     </div>`
 
+export function getInfoBasicaData() {
+    const title = document.querySelector('#title')?.value.trim()
+    const category = document.querySelector('#category')?.value
+}
