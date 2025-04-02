@@ -413,12 +413,24 @@ textarea.form-control {
 }
 
 .image-upload {
+    position: relative;
     border: 2px dashed #ddd;
     padding: 30px;
     text-align: center;
     border-radius: 4px;
     cursor: pointer;
     transition: border-color 0.3s;
+}
+
+.image-upload input[type="file"] {
+    opacity: 0;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+    z-index: 2;
 }
 
 .image-upload:hover {

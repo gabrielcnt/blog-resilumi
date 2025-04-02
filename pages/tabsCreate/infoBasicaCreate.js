@@ -33,8 +33,9 @@ export const infoBasicaCreate = `
         
         <div class="form-group">
             <label>Imagem Destacada</label>
-            <div class="image-upload">
+            <div class="image-upload" id="uploadBox">
                 <div class="image-upload-icon">+</div>
+                <input type="file" id="featured-image" accept="image/*" class="image-upload-input">
                 <p>Clique para fazer upload ou arraste a imagem aqui</p>
                 <p style="font-size: 12px; margin-top: 5px; color: #888;">Dimensões recomendadas: 1200 x 630px</p>
             </div>
@@ -52,25 +53,47 @@ export const infoBasicaCreate = `
             </div>
         </div>
         
-        <div class="form-group">
-            <label>Status de Publicação</label>
-            <div class="status-toggle">
-                <span class="toggle-label">Rascunho</span>
-                <label class="toggle-switch">
-                    <input type="checkbox" class="toggle-input">
-                    <span class="toggle-slider"></span>
-                </label>
-                <span class="toggle-label">Publicado</span>
-            </div>
-        </div>
-        
         <div class="form-actions">
             <button class="btn btn-secondary" onclick="cancelForm()">Cancelar</button>
             <button class="btn btn-primary" onclick="saveInfoBasica()">Próximo: Conteúdo</button>
         </div>
     </div>`
 
-export function getInfoBasicaData() {
-    const title = document.querySelector('#title')?.value.trim()
-    const category = document.querySelector('#category')?.value
-}
+    document.addEventListener('DOMContentLoaded', () => {
+        const inputImage = document.getElementById('featured-image');
+    
+        if (inputImage) {
+            inputImage.addEventListener('change', event => {
+                console.log('Imagem selecionada');
+            });
+        } else {
+            console.warn('Input de imagem não encontrado');
+        }
+    });
+    
+    
+    // Captura a imagem quando um arquivo for selecionado
+    document.addEventListener('change', (event) => {
+        if (event.target.id === 'fileInput') {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const uploadBox = document.getElementById('uploadBox');
+                    uploadBox.innerHTML = `<img src="${e.target.result}" alt="Imagem Selecionada">`;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+    });
+    
+
+    export function getInfoBasicaData() {
+        const title = document.querySelector('#title')?.value.trim()
+        const category = document.querySelector('#category')?.value
+        const author = document.querySelector('#author')?.value.trim()
+        const descricao = document.querySelector('#excerpt')?.value.trim()
+        const data = document.querySelector('#publish-date')?.value
+        const tempoLeitura = document.querySelector('#reading-time')?.value
+
+    }
