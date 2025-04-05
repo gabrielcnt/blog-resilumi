@@ -59,17 +59,8 @@ export const infoBasicaCreate = `
         </div>
     </div>`
 
-    document.addEventListener('DOMContentLoaded', () => {
-        const inputImage = document.getElementById('featured-image');
-    
-        if (inputImage) {
-            inputImage.addEventListener('change', event => {
-                console.log('Imagem selecionada');
-            });
-        } else {
-            console.warn('Input de imagem não encontrado');
-        }
-    });
+    const inputFile = document.getElementById('featured-image')
+        console.log('input capturado')
     
     
     // Captura a imagem quando um arquivo for selecionado

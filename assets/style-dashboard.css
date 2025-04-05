@@ -415,7 +415,7 @@ textarea.form-control {
 .image-upload {
     position: relative;
     border: 2px dashed #ddd;
-    padding: 30px;
+    padding: 0px;
     text-align: center;
     border-radius: 4px;
     cursor: pointer;
@@ -435,6 +435,10 @@ textarea.form-control {
 
 .image-upload:hover {
     border-color: var(--light-purple);
+}
+
+.image-upload img {
+    max-width: 100%;
 }
 
 .image-upload-icon {
