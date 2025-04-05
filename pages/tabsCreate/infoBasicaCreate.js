@@ -59,14 +59,42 @@ export const infoBasicaCreate = `
         </div>
     </div>`
 
-    const inputFile = document.getElementById('featured-image')
-        console.log('input capturado')
-    
+        // Aguarda a inserção do conteúdo no DOM
+    document.addEventListener("DOMContentLoaded", function () {
+        setTimeout(() => {
+            const inputFile = document.getElementById('featured-image');
+
+            if (inputFile) {
+                inputFile.addEventListener('change', carregarImagem);
+            } else {
+                console.error("Elemento #featured-image não encontrado no DOM.");
+            }
+        }, 100); // Pequeno delay para garantir que o DOM carregue a string infoBasicaCreate
+    });
+
+    function carregarImagem(event) {
+        const inputFile = event.target;
+        
+        console.log('Input capturado');
+        
+        if (inputFile.files.length > 0) {
+            const file = inputFile.files[0];
+            console.log('Arquivo Selecionado:', file.name);
+
+            // Exibir a prévia da imagem
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                const uploadBox = document.getElementById('uploadBox');
+                uploadBox.innerHTML = `<img src="${e.target.result}" alt="Imagem Selecionada" style="max-width:100%; height:auto;">`;
+            };
+            reader.readAsDataURL(file);
+        }
+    }   
     
     // Captura a imagem quando um arquivo for selecionado
     document.addEventListener('change', (event) => {
         if (event.target.id === 'fileInput') {
-            const file = event.target.files[0];
+        const file = event.target.files[0];
             if (file) {
                 const reader = new FileReader();
                 reader.onload = function(e) {
@@ -86,5 +114,18 @@ export const infoBasicaCreate = `
         const descricao = document.querySelector('#excerpt')?.value.trim()
         const data = document.querySelector('#publish-date')?.value
         const tempoLeitura = document.querySelector('#reading-time')?.value
+
+        const inputFile = document.querySelector('#featured-image');
+        const imagem = inputFile.files.length > 0 ? inputFile.files[0] : null;
+
+        return {
+            title,
+            category,
+            author,
+            descricao,
+            data,
+            tempoLeitura,
+            imagem  // Objeto File
+        };
 
     }
