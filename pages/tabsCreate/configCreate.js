@@ -1,3 +1,5 @@
+import { validateInfoBasica } from "./infoBasicaCreate.js"
+
 export const configCreate = `<div id="config-container" class="form-container">
     <h3 class="form-title">Configurações do Artigo</h3>
 
@@ -70,3 +72,33 @@ export const configCreate = `<div id="config-container" class="form-container">
         <button type="button" class="btn btn-primary" id="btn-publish">Publicar Artigo</button>
     </div>
 </div>`
+
+function attachPublishEvent() {
+    const publishButton = document.getElementById('btn-publish');
+
+    if (publishButton) {
+        publishButton.replaceWith(publishButton.cloneNode(true)); // Remove eventos duplicados
+        const newPublishButton = document.getElementById('btn-publish');
+
+        newPublishButton.addEventListener('click', function () {
+            if (typeof validateInfoBasica === 'function') {
+                if (!validateInfoBasica()) {
+                    alert("Preencha todos os campos obrigatórios antes de publicar.");
+                    return;
+                }
+            } else {
+                console.error("Erro: validateInfoBasica não está definida.");
+            }
+        });
+    }
+}
+
+// Executa o evento quando a DOM estiver carregada
+document.addEventListener("DOMContentLoaded", attachPublishEvent);
+
+// Observer para carregar eventos dinamicamente apenas se necessário
+const observer = new MutationObserver(() => {
+    observer.disconnect(); // Evita execução contínua desnecessária
+    attachPublishEvent();
+});
+observer.observe(document.body, { childList: true, subtree: true });

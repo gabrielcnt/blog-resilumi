@@ -58,3 +58,16 @@ export const editorCreate = `<div id="editor-container" class="form-container">
                     <button type="button" class="btn btn-primary" id="btn-tab-next">Próximo: Imagens & SEO</button>
                 </div>
             </div>`
+
+document.addEventListener("DOMContentLoaded", function() {
+    const btnNext = document.getElementById('btn-tab-next');
+    if (btnNext) {
+        btnNext.addEventListener('click', function() {
+            const dados = getEditorData();
+            console.log("Subtítulo:", dados.subtitulo);
+            console.log("Conteúdo:", dados.conteudo);
+        });
+    } else {
+        console.error("Botão 'btn-tab-next' não encontrado!");
+    }
+});

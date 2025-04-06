@@ -54,78 +54,125 @@ export const infoBasicaCreate = `
         </div>
         
         <div class="form-actions">
-            <button class="btn btn-secondary" onclick="cancelForm()">Cancelar</button>
-            <button class="btn btn-primary" onclick="saveInfoBasica()">Próximo: Conteúdo</button>
+            <button class="btn btn-secondary">Cancelar</button>
+            <button class="btn btn-primary">Próximo: Conteúdo</button>
         </div>
     </div>`
 
-        // Aguarda a inserção do conteúdo no DOM
-    document.addEventListener("DOMContentLoaded", function () {
-        setTimeout(() => {
-            const inputFile = document.getElementById('featured-image');
 
-            if (inputFile) {
-                inputFile.addEventListener('change', carregarImagem);
-            } else {
-                console.error("Elemento #featured-image não encontrado no DOM.");
-            }
-        }, 100); // Pequeno delay para garantir que o DOM carregue a string infoBasicaCreate
-    });
 
-    function carregarImagem(event) {
-        const inputFile = event.target;
-        
-        console.log('Input capturado');
-        
-        if (inputFile.files.length > 0) {
-            const file = inputFile.files[0];
-            console.log('Arquivo Selecionado:', file.name);
+// Aguarda a inserção do conteúdo no DOM
+document.addEventListener("DOMContentLoaded", function () {
+    setTimeout(() => {
+        const inputFile = document.getElementById('featured-image');
 
-            // Exibir a prévia da imagem
+        if (inputFile) {
+            inputFile.addEventListener('change', carregarImagem);
+        } else {
+            console.error("Elemento #featured-image não encontrado no DOM.");
+        }
+    }, 100); // Pequeno delay para garantir que o DOM carregue a string infoBasicaCreate
+});
+
+function carregarImagem(event) {
+    const inputFile = event.target;
+    
+    console.log('Input capturado');
+    
+    if (inputFile.files.length > 0) {
+        const file = inputFile.files[0];
+        console.log('Arquivo Selecionado:', file.name);
+
+        // Exibir a prévia da imagem
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            const uploadBox = document.getElementById('uploadBox');
+            uploadBox.innerHTML = `<img src="${e.target.result}" alt="Imagem Selecionada" style="max-width:100%; height:auto;">`;
+        };
+        reader.readAsDataURL(file);
+    }
+}   
+
+// Captura a imagem quando um arquivo for selecionado
+document.addEventListener('change', (event) => {
+    if (event.target.id === 'fileInput') {
+    const file = event.target.files[0];
+        if (file) {
             const reader = new FileReader();
-            reader.onload = function (e) {
+            reader.onload = function(e) {
                 const uploadBox = document.getElementById('uploadBox');
-                uploadBox.innerHTML = `<img src="${e.target.result}" alt="Imagem Selecionada" style="max-width:100%; height:auto;">`;
+                uploadBox.innerHTML = `<img src="${e.target.result}" alt="Imagem Selecionada">`;
             };
             reader.readAsDataURL(file);
         }
-    }   
-    
-    // Captura a imagem quando um arquivo for selecionado
-    document.addEventListener('change', (event) => {
-        if (event.target.id === 'fileInput') {
-        const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const uploadBox = document.getElementById('uploadBox');
-                    uploadBox.innerHTML = `<img src="${e.target.result}" alt="Imagem Selecionada">`;
-                };
-                reader.readAsDataURL(file);
-            }
-        }
-    });
-    
-
-    export function getInfoBasicaData() {
-        const title = document.querySelector('#title')?.value.trim()
-        const category = document.querySelector('#category')?.value
-        const author = document.querySelector('#author')?.value.trim()
-        const descricao = document.querySelector('#excerpt')?.value.trim()
-        const data = document.querySelector('#publish-date')?.value
-        const tempoLeitura = document.querySelector('#reading-time')?.value
-
-        const inputFile = document.querySelector('#featured-image');
-        const imagem = inputFile.files.length > 0 ? inputFile.files[0] : null;
-
-        return {
-            title,
-            category,
-            author,
-            descricao,
-            data,
-            tempoLeitura,
-            imagem  // Objeto File
-        };
-
     }
+});
+
+
+export function getInfoBasicaData() {
+    const title = document.querySelector('#title')?.value.trim()
+    const category = document.querySelector('#category')?.value
+    const author = document.querySelector('#author')?.value.trim()
+    const descricao = document.querySelector('#excerpt')?.value.trim()
+    const data = document.querySelector('#publish-date')?.value
+    const tempoLeitura = document.querySelector('#reading-time')?.value
+
+    const inputFile = document.querySelector('#featured-image');
+    const imagem = inputFile.files.length > 0 ? inputFile.files[0] : null;
+
+    return {
+        title,
+        category,
+        author,
+        descricao,
+        data,
+        tempoLeitura,
+        imagem  // Objeto File
+    }
+}
+
+export function validateInfoBasica() {
+    let isValid = true;
+
+    function markInvalid(fieldId) {
+        const field = document.getElementById(fieldId);
+        const label = document.querySelector(`label[for="${fieldId}"]`);
+        if (field) {
+            field.classList.add('error-border');
+        }
+        if (label && !label.querySelector('.error-marker')) {
+            label.innerHTML += ' <span class="error-marker" style="color: red;">*</span>';
+        }
+        isValid = false;
+    }
+
+    function clearInvalid(fieldId) {
+        const field = document.getElementById(fieldId);
+        const label = document.querySelector(`label[for="${fieldId}"]`);
+        if (field) {
+            field.classList.remove('error-border');
+        }
+        if (label) {
+            label.innerHTML = label.innerHTML.replace(/<span class="error-marker"[^>]*>\*<\/span>/g, '');
+        }
+    }
+
+    const title = document.getElementById('title')?.value.trim();
+    const category = document.getElementById('category')?.value;
+    const author = document.getElementById('author')?.value.trim();
+
+    if (!title) markInvalid('title'); else clearInvalid('title');
+    if (!category) markInvalid('category'); else clearInvalid('category');
+    if (!author) markInvalid('author'); else clearInvalid('author');
+
+    return isValid;
+}
+
+// Estilos para erro
+const style = document.createElement('style');
+style.innerHTML = `
+    .error-border { border: 2px solid red !important; }
+`;
+document.head.appendChild(style);
+
+
