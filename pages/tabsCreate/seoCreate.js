@@ -2,7 +2,7 @@ export const seoCreate = `<div id="seo-container" class="form-container">
             <h3 class="form-title">Imagens e Otimização para Buscadores</h3>
             
             <!-- Seção de Galeria de Imagens -->
-            <div class="form-group">
+        <!-- <div class="form-group">
                 <label>Galeria de Imagens</label>
                 <p style="font-size: 13px; color: #666; margin-bottom: 10px;">Adicione imagens adicionais para o corpo do artigo.</p>
                 
@@ -24,7 +24,7 @@ export const seoCreate = `<div id="seo-container" class="form-container">
                         <div class="text">Adicionar</div>
                     </div>
                 </div>
-            </div>
+            </div> -->
             
             <!-- Seção de SEO -->
             <div class="form-group">
@@ -192,3 +192,36 @@ export const seoCreate = `<div id="seo-container" class="form-container">
                 <button class="btn btn-primary">Próximo: Configurações</button>
             </div>
         </div>`
+
+document.addEventListener("DOMContentLoaded", function () {
+    // Exemplo: Alterar dinamicamente o título da página
+    const seoTitle = document.querySelector(".seo-title");
+    if (seoTitle) {
+        document.title = seoTitle.textContent;
+    }
+
+    // Exemplo: Atualizar a meta descrição
+    const seoDescription = document.querySelector(".seo-description");
+    if (seoDescription) {
+        let metaTag = document.querySelector("meta[name='description']");
+        if (!metaTag) {
+            metaTag = document.createElement("meta");
+            metaTag.name = "description";
+            document.head.appendChild(metaTag);
+        }
+        metaTag.content = seoDescription.textContent;
+    }
+
+    // Exemplo: Alternar visibilidade de seções de SEO
+    const toggleButtons = document.querySelectorAll(".toggle-section");
+    toggleButtons.forEach(button => {
+        button.addEventListener("click", function () {
+            const targetId = this.getAttribute("data-target");
+            const targetSection = document.getElementById(targetId);
+            if (targetSection) {
+                targetSection.classList.toggle("hidden");
+            }
+        });
+    });
+});
+        

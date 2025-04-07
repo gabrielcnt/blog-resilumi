@@ -6,6 +6,12 @@ export const initQuillEditor = (container) => {
         return null;
     }
 
+    // Se o Quill já foi iniciado, não inicializa novamente
+    if (container.querySelector(".ql-toolbar")) {
+        console.warn("O editor Quill já foi inicializado.");
+        return null;
+    }
+
     const editorElement = container.querySelector('#quill-editor');
     if (!editorElement) {
         console.error('Elemento #quill-editor não encontrado');

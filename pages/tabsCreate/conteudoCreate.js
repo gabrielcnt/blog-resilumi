@@ -1,3 +1,4 @@
+import {initQuillEditor} from "../../utils/editorQuill.js"
 
 export const editorCreate = `<div id="editor-container" class="form-container">
                 <h3 class="form-title">Editor de Conteúdo</h3>
@@ -59,15 +60,57 @@ export const editorCreate = `<div id="editor-container" class="form-container">
                 </div>
             </div>`
 
-document.addEventListener("DOMContentLoaded", function() {
-    const btnNext = document.getElementById('btn-tab-next');
-    if (btnNext) {
-        btnNext.addEventListener('click', function() {
-            const dados = getEditorData();
-            console.log("Subtítulo:", dados.subtitulo);
-            console.log("Conteúdo:", dados.conteudo);
-        });
-    } else {
-        console.error("Botão 'btn-tab-next' não encontrado!");
-    }
+let quill; // Variável para armazenar a instância do editor
+
+document.addEventListener("DOMContentLoaded", () => {
+    setTimeout(() => {
+        const container = document.getElementById("editor-container");
+        if (container) {
+            quill = initQuillEditor(container);
+        } else {
+            console.error("O container do editor não foi encontrado.");
+        }
+    }, 500); // Aguarda 500ms para garantir que o HTML foi injetado
 });
+
+function getEditorData() {
+    if (!quill) return { subtitulo: "", conteudo: "" }; // Evita erro caso o editor ainda não tenha sido inicializado
+    return {
+        subtitulo: document.getElementById("subtitle").value,
+        conteudo: quill.root.innerHTML.trim(),
+    };
+}
+
+export function validateConteudo() {
+    let isValid = true;
+
+    function markInvalid(fieldId) {
+        const field = document.getElementById(fieldId);
+        if (field) {
+            field.classList.add("error-border");
+        }
+        isValid = false;
+    }
+
+    function clearInvalid(fieldId) {
+        const field = document.getElementById(fieldId);
+        if (field) {
+            field.classList.remove("error-border");
+        }
+    }
+
+    // Validar conteúdo do Quill
+    if (!quill) return false; // Garante que o Quill foi carregado antes da validação
+    const quillContent = quill.root.innerHTML.trim();
+    if (!quillContent || quillContent === "<p><br></p>") markInvalid("quill-editor");
+    else clearInvalid("quill-editor");
+
+    return isValid;
+}
+
+// Adiciona estilos para erro
+const style = document.createElement('style');
+style.innerHTML = `
+    .error-border { border: 2px solid red !important; }
+`;
+document.head.appendChild(style);

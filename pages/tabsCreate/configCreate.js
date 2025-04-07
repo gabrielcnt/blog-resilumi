@@ -1,4 +1,5 @@
 import { validateInfoBasica } from "./infoBasicaCreate.js"
+import { validateConteudo } from "./conteudoCreate.js"
 
 export const configCreate = `<div id="config-container" class="form-container">
     <h3 class="form-title">Configurações do Artigo</h3>
@@ -81,13 +82,13 @@ function attachPublishEvent() {
         const newPublishButton = document.getElementById('btn-publish');
 
         newPublishButton.addEventListener('click', function () {
-            if (typeof validateInfoBasica === 'function') {
-                if (!validateInfoBasica()) {
+            if (typeof validateInfoBasica === 'function' && typeof validateConteudo === 'function') {
+                if (!validateInfoBasica() || !validateConteudo()) {
                     alert("Preencha todos os campos obrigatórios antes de publicar.");
                     return;
                 }
             } else {
-                console.error("Erro: validateInfoBasica não está definida.");
+                console.error("Erro: Função de validação não está definida.");
             }
         });
     }
