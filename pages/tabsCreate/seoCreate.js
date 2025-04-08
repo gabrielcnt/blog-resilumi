@@ -28,7 +28,7 @@ export const seoCreate = `<div id="seo-container" class="form-container">
             
             <!-- Seção de SEO -->
             <div class="form-group">
-                <label>Análise SEO</label>
+                <!-- <label>Análise SEO</label>
                 <div class="seo-score">
                     <div class="seo-header">
                         <div class="seo-title">Pontuação SEO</div>
@@ -70,7 +70,7 @@ export const seoCreate = `<div id="seo-container" class="form-container">
                             </div>
                         </li>
                     </ul>
-                </div>
+                </div> -->
             </div>
             
             <!-- Configurações SEO -->
@@ -78,7 +78,7 @@ export const seoCreate = `<div id="seo-container" class="form-container">
                 <label for="seo-title">Título SEO</label>
                 <input type="text" id="seo-title" class="form-control" placeholder="Digite o título SEO (55-60 caracteres)" value="Como a Inteligência Artificial está moldando o futuro">
                 <div style="display: flex; justify-content: flex-end; margin-top: 5px;">
-                    <span style="font-size: 12px; color: #666;">55 caracteres</span>
+                    <span id="contTitle" style="font-size: 12px; color: #666;">55 caracteres (recomendado: 60)</span>
                 </div>
             </div>
             
@@ -86,7 +86,7 @@ export const seoCreate = `<div id="seo-container" class="form-container">
                 <label for="seo-description">Meta Descrição</label>
                 <textarea id="seo-description" class="form-control" placeholder="Digite a meta descrição (140-160 caracteres)">Uma análise profunda sobre o impacto da IA no mercado de trabalho, na educação e no cotidiano das pessoas. Descubra as implicações éticas e o futuro.</textarea>
                 <div style="display: flex; justify-content: flex-end; margin-top: 5px;">
-                    <span style="font-size: 12px; color: #666;">143 caracteres</span>
+                    <span id="contDescription" style="font-size: 12px; color: #666;">143 caracteres <span>(recomendado: 160)</span></span>
                 </div>
             </div>
             
@@ -193,35 +193,116 @@ export const seoCreate = `<div id="seo-container" class="form-container">
             </div>
         </div>`
 
-document.addEventListener("DOMContentLoaded", function () {
-    // Exemplo: Alterar dinamicamente o título da página
-    const seoTitle = document.querySelector(".seo-title");
-    if (seoTitle) {
-        document.title = seoTitle.textContent;
-    }
 
-    // Exemplo: Atualizar a meta descrição
-    const seoDescription = document.querySelector(".seo-description");
-    if (seoDescription) {
-        let metaTag = document.querySelector("meta[name='description']");
-        if (!metaTag) {
-            metaTag = document.createElement("meta");
-            metaTag.name = "description";
-            document.head.appendChild(metaTag);
-        }
-        metaTag.content = seoDescription.textContent;
-    }
+        // Informações de SEO:
 
-    // Exemplo: Alternar visibilidade de seções de SEO
-    const toggleButtons = document.querySelectorAll(".toggle-section");
-    toggleButtons.forEach(button => {
-        button.addEventListener("click", function () {
-            const targetId = this.getAttribute("data-target");
-            const targetSection = document.getElementById(targetId);
-            if (targetSection) {
-                targetSection.classList.toggle("hidden");
+        // Título SEO (seo-title)
+        // Meta descrição (seo-description)
+        // URL amigável (seo-url)
+        // Palavra-chave principal (focus-keyword)
+        
+        
+        // Tags do artigo:
+        
+        // Lista de tags associadas ao artigo
+        
+        
+        // Metatags adicionais:
+        
+        // Pares de nome/valor das metatags personalizadas (como author, robots, etc.)
+        
+        
+        // Imagem para redes sociais:
+        
+        // Referência ao arquivo de imagem selecionado para compartilhamento em redes sociais
+
+// Função para atualizar os contadores de caracteres
+function updateCharacterCounters() {
+    const titleInput = document.querySelector("#seo-title");
+    const descriptionInput = document.querySelector("#seo-description");
+    
+    const titleCounter = document.querySelector("#contTitle");
+    const descriptionCounter = document.querySelector("#contDescription");
+    
+    if (titleInput && titleCounter) {
+        titleInput.addEventListener("input", function() {
+            const currentLength = this.value.length;
+            const maxRecommended = 60;
+            
+            titleCounter.textContent = `${currentLength} caracteres (recomendado: ${maxRecommended})`;
+            
+            // Mudar a cor do contador se ultrapassar o limite recomendado
+            if (currentLength > maxRecommended) {
+                titleCounter.style.color = "#e74c3c"; // Vermelho para indicar que excedeu
+            } else {
+                titleCounter.style.color = "#666"; // Cor padrão
             }
         });
-    });
-});
         
+        // Disparar o evento para atualizar o contador inicialmente
+        titleInput.dispatchEvent(new Event('input'));
+    }
+    
+    if (descriptionInput && descriptionCounter) {
+        descriptionInput.addEventListener("input", function() {
+            const currentLength = this.value.length;
+            const maxRecommended = 160;
+            
+            descriptionCounter.innerHTML = `${currentLength} caracteres <span>(recomendado: ${maxRecommended})</span>`;
+            
+            // Mudar a cor do contador se ultrapassar o limite recomendado
+            if (currentLength > maxRecommended) {
+                descriptionCounter.style.color = "#e74c3c"; // Vermelho para indicar que excedeu
+            } else {
+                descriptionCounter.style.color = "#666"; // Cor padrão
+            }
+        });
+        
+        // Disparar o evento para atualizar o contador inicialmente
+        descriptionInput.dispatchEvent(new Event('input'));
+    }
+}
+
+const observer = new MutationObserver(() => {
+    const titleInput = document.querySelector("#seo-title");
+    const descriptionInput = document.querySelector("#seo-description");
+    const urlInput = document.querySelector("#seo-url");
+
+    const searchTitle = document.querySelector(".search-title");
+    const searchUrl = document.querySelector(".search-url");
+    const searchDescription = document.querySelector(".search-description");
+
+    const socialTitle = document.querySelector(".social-title");
+    const socialDescription = document.querySelector(".social-description");
+    const socialUrl = document.querySelector(".social-url");
+    
+
+    if (titleInput && descriptionInput && urlInput &&
+        searchTitle && searchUrl && searchDescription &&
+        socialTitle && socialDescription && socialUrl) {
+
+        function updatePreview() {
+            searchTitle.textContent = titleInput.value || "Título do artigo";
+            searchDescription.textContent = descriptionInput.value || "Descrição do artigo";
+            searchUrl.textContent = `www.seublog.com › ${urlInput.value || "url-do-artigo"}`;
+
+            socialTitle.textContent = titleInput.value || "Título do artigo";
+            socialDescription.textContent = descriptionInput.value || "Descrição do artigo";
+            socialUrl.textContent = "seublog.com";
+        }
+
+        titleInput.addEventListener("input", updatePreview);
+        descriptionInput.addEventListener("input", updatePreview);
+        urlInput.addEventListener("input", updatePreview);
+
+        updatePreview();
+
+        // Adicionar a função para os contadores de caracteres
+        updateCharacterCounters();
+
+        observer.disconnect(); // Para de observar após encontrar os elementos
+    }
+});
+
+// Observar mudanças no corpo do documento
+observer.observe(document.body, { childList: true, subtree: true });
