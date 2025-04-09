@@ -263,10 +263,68 @@ function updateCharacterCounters() {
     }
 }
 
+// Função para gerenciar as tags do artigo
+function setupTagsManagement() {
+    const tagContainer = document.querySelector(".tag-input-container");
+    const tagInput = document.querySelector(".tag-input");
+    
+    if (!tagContainer || !tagInput) return;
+    
+    // Função para criar uma nova tag
+    function createTag(tagText) {
+        // Verificar se a tag já existe
+        const existingTags = Array.from(tagContainer.querySelectorAll('.tag span:first-child'))
+            .map(span => span.textContent.toLowerCase());
+        
+        if (existingTags.includes(tagText.toLowerCase())) return;
+        
+        // Criar o elemento da tag
+        const tag = document.createElement("div");
+        tag.className = "tag";
+        
+        // Adicionar o texto da tag
+        const tagContent = document.createElement("span");
+        tagContent.textContent = tagText;
+        tag.appendChild(tagContent);
+        
+        // Adicionar o botão de remover
+        const removeBtn = document.createElement("span");
+        removeBtn.className = "tag-remove";
+        removeBtn.textContent = "×";
+        removeBtn.addEventListener("click", function() {
+            tag.remove();
+        });
+        tag.appendChild(removeBtn);
+        
+        // Inserir a tag antes do input
+        tagContainer.insertBefore(tag, tagInput);
+    }
+    
+    // Evento para adicionar uma tag quando pressionar Enter
+    tagInput.addEventListener("keydown", function(e) {
+        if (e.key === "Enter" && this.value.trim() !== "") {
+            e.preventDefault(); // Prevenir o comportamento padrão do Enter
+            createTag(this.value.trim());
+            this.value = ""; // Limpar o input após adicionar
+        }
+    });
+    
+    // Configurar os botões de remover nas tags existentes
+    const existingRemoveBtns = tagContainer.querySelectorAll(".tag-remove");
+    existingRemoveBtns.forEach(btn => {
+        btn.addEventListener("click", function() {
+            this.parentElement.remove();
+        });
+    });
+}
+
+
 const observer = new MutationObserver(() => {
     const titleInput = document.querySelector("#seo-title");
     const descriptionInput = document.querySelector("#seo-description");
     const urlInput = document.querySelector("#seo-url");
+    const tagContainer = document.querySelector(".tag-input-container");
+
 
     const searchTitle = document.querySelector(".search-title");
     const searchUrl = document.querySelector(".search-url");
@@ -299,6 +357,11 @@ const observer = new MutationObserver(() => {
 
         // Adicionar a função para os contadores de caracteres
         updateCharacterCounters();
+
+        // Inicializar o gerenciamento de tags
+        setupTagsManagement();
+
+        
 
         observer.disconnect(); // Para de observar após encontrar os elementos
     }
