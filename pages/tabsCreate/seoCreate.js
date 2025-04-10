@@ -169,7 +169,7 @@ export const seoCreate = `<div id="seo-container" class="form-container">
                 <label>Metatags Adicionais</label>
                 <p style="font-size: 13px; color: #666; margin-bottom: 10px;">Adicione metatags personalizadas para melhorar a indexação do seu artigo.</p>
                 
-                <div style="margin-top: 15px;">
+                <div id="metatags-container" style="margin-top: 15px;">
                     <div style="display: flex; margin-bottom: 10px; gap: 10px;">
                         <input type="text" class="form-control" placeholder="Nome da metatag" value="author">
                         <input type="text" class="form-control" placeholder="Conteúdo da metatag" value="Seu Nome">
@@ -180,7 +180,7 @@ export const seoCreate = `<div id="seo-container" class="form-container">
                         <input type="text" class="form-control" placeholder="Conteúdo da metatag" value="index, follow">
                         <button style="background-color: #f44336; color: white; border: none; width: 40px; border-radius: 4px; cursor: pointer;">×</button>
                     </div>
-                    <button style="display: flex; align-items: center; gap: 5px; background: none; border: 1px dashed #ddd; padding: 8px 15px; border-radius: 4px; cursor: pointer; color: var(--purple);">
+                    <button id="add-metatag" style="display: flex; align-items: center; gap: 5px; background: none; border: 1px dashed #ddd; padding: 8px 15px; border-radius: 4px; cursor: pointer; color: var(--purple);">
                         <span>+</span> Adicionar nova metatag
                     </button>
                 </div>
@@ -317,6 +317,93 @@ function setupTagsManagement() {
         });
     });
 }
+
+window.initMetatagsFeature = function () {
+    const container = document.getElementById("metatags-container");
+    const addButton = document.getElementById("add-metatag");
+
+    if (!container || !addButton) {
+        console.error("Erro: Elementos não encontrados!");
+        return;
+    }
+
+    addButton.addEventListener("click", function () {
+        const metatag = document.createElement("div");
+        metatag.classList.add("metatag");
+        metatag.style.display = "flex";
+        metatag.style.marginBottom = "10px";
+        metatag.style.gap = "10px";
+
+        metatag.innerHTML = `
+            <input type="text" class="form-control" placeholder="Nome da metatag">
+            <input type="text" class="form-control" placeholder="Conteúdo da metatag">
+            <button class="remove-btn" style="background-color: #f44336; color: white; border: none; width: 40px; border-radius: 4px; cursor: pointer;">×</button>
+        `;
+
+        container.appendChild(metatag);
+        addRemoveFunctionality(metatag);
+    });
+
+    function addRemoveFunctionality(element) {
+        const removeButton = element.querySelector(".remove-btn");
+        removeButton.addEventListener("click", function () {
+            element.remove();
+        });
+    }
+
+    document.querySelectorAll(".metatag").forEach(addRemoveFunctionality);
+};
+
+// Espera o DOM carregar e executa a função
+document.addEventListener("DOMContentLoaded", window.initMetatagsFeature);
+
+// Usa MutationObserver para monitorar mudanças no DOM (SPA)
+const observa = new MutationObserver(() => {
+    window.initMetatagsFeature();
+});
+observa.observe(document.body, { childList: true, subtree: true });
+
+// Tentar inicializar assim que o script é carregado
+initMetatagsFeature();
+
+// Também tentar quando o DOM estiver pronto
+document.addEventListener('DOMContentLoaded', initMetatagsFeature);
+
+// Alternativa: usar delegação de eventos para maior robustez
+document.addEventListener('click', function(event) {
+    // Se o clique foi em um botão de adicionar metatag
+    if (event.target.matches('#add-metatag-btn') || event.target.closest('#add-metatag-btn')) {
+        const container = document.getElementById('metatags-container');
+        const addButton = document.getElementById('add-metatag-btn');
+        
+        if (container && addButton) {
+            // Criar uma nova linha de metatag
+            const newRow = document.createElement('div');
+            newRow.className = 'metatag-row';
+            
+            // Criar os campos e o botão de remover
+            newRow.innerHTML = `
+                <input type="text" class="form-control" placeholder="Nome da metatag" value="">
+                <input type="text" class="form-control" placeholder="Conteúdo da metatag" value="">
+                <button class="remove-btn">×</button>
+            `;
+            
+            // Inserir a nova linha antes do botão de adicionar
+            container.insertBefore(newRow, addButton);
+            
+            // Focar no primeiro input da nova linha
+            newRow.querySelector('input').focus();
+        }
+    }
+    
+    // Se o clique foi em um botão de remover
+    if (event.target.matches('.remove-btn')) {
+        const row = event.target.closest('.metatag-row');
+        if (row) {
+            row.remove();
+        }
+    }
+});
 
 
 const observer = new MutationObserver(() => {
