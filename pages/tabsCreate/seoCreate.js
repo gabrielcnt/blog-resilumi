@@ -157,7 +157,8 @@ export const seoCreate = `<div id="seo-container" class="form-container">
                 <label>Imagem em Destaque para Redes Sociais</label>
                 <p style="font-size: 13px; color: #666; margin-bottom: 10px;">Selecione uma imagem que será exibida ao compartilhar o artigo nas redes sociais (Dimensão recomendada: 1200 x 630 pixels).</p>
                 
-                <div style="border: 2px dashed #ddd; padding: 30px; text-align: center; border-radius: 4px; cursor: pointer; transition: border-color 0.3s; margin-top: 10px;">
+                <div class="image-upload" id="uploadBox">
+                    <input type="file" id="featured-image" accept="image/*" class="image-upload-input">
                     <div style="font-size: 32px; color: var(--light-purple); margin-bottom: 10px;">⬆️</div>
                     <p>Arraste e solte uma imagem aqui ou clique para selecionar</p>
                     <p style="font-size: 12px; color: #666; margin-top: 10px;">Formatos aceitos: JPG, PNG e GIF. Tamanho máximo: 5MB.</p>
@@ -170,16 +171,7 @@ export const seoCreate = `<div id="seo-container" class="form-container">
                 <p style="font-size: 13px; color: #666; margin-bottom: 10px;">Adicione metatags personalizadas para melhorar a indexação do seu artigo.</p>
                 
                 <div id="metatags-container" style="margin-top: 15px;">
-                    <div style="display: flex; margin-bottom: 10px; gap: 10px;">
-                        <input type="text" class="form-control" placeholder="Nome da metatag" value="author">
-                        <input type="text" class="form-control" placeholder="Conteúdo da metatag" value="Seu Nome">
-                        <button style="background-color: #f44336; color: white; border: none; width: 40px; border-radius: 4px; cursor: pointer;">×</button>
-                    </div>
-                    <div style="display: flex; margin-bottom: 10px; gap: 10px;">
-                        <input type="text" class="form-control" placeholder="Nome da metatag" value="robots">
-                        <input type="text" class="form-control" placeholder="Conteúdo da metatag" value="index, follow">
-                        <button style="background-color: #f44336; color: white; border: none; width: 40px; border-radius: 4px; cursor: pointer;">×</button>
-                    </div>
+                      
                     <button id="add-metatag" style="display: flex; align-items: center; gap: 5px; background: none; border: 1px dashed #ddd; padding: 8px 15px; border-radius: 4px; cursor: pointer; color: var(--purple);">
                         <span>+</span> Adicionar nova metatag
                     </button>
@@ -318,92 +310,60 @@ function setupTagsManagement() {
     });
 }
 
-window.initMetatagsFeature = function () {
+function initializeMetatagEvents() {
     const container = document.getElementById("metatags-container");
     const addButton = document.getElementById("add-metatag");
 
-    if (!container || !addButton) {
-        console.error("Erro: Elementos não encontrados!");
-        return;
-    }
+    if (!container || !addButton) return;
 
-    addButton.addEventListener("click", function () {
-        const metatag = document.createElement("div");
-        metatag.classList.add("metatag");
-        metatag.style.display = "flex";
-        metatag.style.marginBottom = "10px";
-        metatag.style.gap = "10px";
+    function createTagElement(name = "", content = "") {
+        const tagWrapper = document.createElement("div");
+        tagWrapper.style.display = "flex";
+        tagWrapper.style.marginBottom = "10px";
+        tagWrapper.style.gap = "10px";
 
-        metatag.innerHTML = `
-            <input type="text" class="form-control" placeholder="Nome da metatag">
-            <input type="text" class="form-control" placeholder="Conteúdo da metatag">
-            <button class="remove-btn" style="background-color: #f44336; color: white; border: none; width: 40px; border-radius: 4px; cursor: pointer;">×</button>
-        `;
+        const nameInput = document.createElement("input");
+        nameInput.type = "text";
+        nameInput.className = "form-control";
+        nameInput.placeholder = "Nome da metatag";
+        nameInput.value = name;
 
-        container.appendChild(metatag);
-        addRemoveFunctionality(metatag);
-    });
+        const contentInput = document.createElement("input");
+        contentInput.type = "text";
+        contentInput.className = "form-control";
+        contentInput.placeholder = "Conteúdo da metatag";
+        contentInput.value = content;
 
-    function addRemoveFunctionality(element) {
-        const removeButton = element.querySelector(".remove-btn");
+        const removeButton = document.createElement("button");
+        removeButton.textContent = "×";
+        removeButton.style.backgroundColor = "#f44336";
+        removeButton.style.color = "white";
+        removeButton.style.border = "none";
+        removeButton.style.width = "40px";
+        removeButton.style.borderRadius = "4px";
+        removeButton.style.cursor = "pointer";
+
         removeButton.addEventListener("click", function () {
-            element.remove();
+            tagWrapper.remove();
         });
+
+        tagWrapper.appendChild(nameInput);
+        tagWrapper.appendChild(contentInput);
+        tagWrapper.appendChild(removeButton);
+        container.insertBefore(tagWrapper, addButton);
     }
 
-    document.querySelectorAll(".metatag").forEach(addRemoveFunctionality);
-};
-
-// Espera o DOM carregar e executa a função
-document.addEventListener("DOMContentLoaded", window.initMetatagsFeature);
-
-// Usa MutationObserver para monitorar mudanças no DOM (SPA)
-const observa = new MutationObserver(() => {
-    window.initMetatagsFeature();
-});
-observa.observe(document.body, { childList: true, subtree: true });
-
-// Tentar inicializar assim que o script é carregado
-initMetatagsFeature();
-
-// Também tentar quando o DOM estiver pronto
-document.addEventListener('DOMContentLoaded', initMetatagsFeature);
-
-// Alternativa: usar delegação de eventos para maior robustez
-document.addEventListener('click', function(event) {
-    // Se o clique foi em um botão de adicionar metatag
-    if (event.target.matches('#add-metatag-btn') || event.target.closest('#add-metatag-btn')) {
-        const container = document.getElementById('metatags-container');
-        const addButton = document.getElementById('add-metatag-btn');
-        
-        if (container && addButton) {
-            // Criar uma nova linha de metatag
-            const newRow = document.createElement('div');
-            newRow.className = 'metatag-row';
-            
-            // Criar os campos e o botão de remover
-            newRow.innerHTML = `
-                <input type="text" class="form-control" placeholder="Nome da metatag" value="">
-                <input type="text" class="form-control" placeholder="Conteúdo da metatag" value="">
-                <button class="remove-btn">×</button>
-            `;
-            
-            // Inserir a nova linha antes do botão de adicionar
-            container.insertBefore(newRow, addButton);
-            
-            // Focar no primeiro input da nova linha
-            newRow.querySelector('input').focus();
-        }
+    function addMetaTagHandler() {
+        createTagElement();
     }
-    
-    // Se o clique foi em um botão de remover
-    if (event.target.matches('.remove-btn')) {
-        const row = event.target.closest('.metatag-row');
-        if (row) {
-            row.remove();
-        }
+
+    // Adiciona o evento uma única vez
+    if (!addButton.dataset.listener) {
+        addButton.addEventListener("click", addMetaTagHandler);
+        addButton.dataset.listener = "true";
     }
-});
+}
+
 
 
 const observer = new MutationObserver(() => {
