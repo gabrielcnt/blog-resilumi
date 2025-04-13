@@ -157,7 +157,7 @@ export const seoCreate = `<div id="seo-container" class="form-container">
                 <label>Imagem em Destaque para Redes Sociais</label>
                 <p style="font-size: 13px; color: #666; margin-bottom: 10px;">Selecione uma imagem que será exibida ao compartilhar o artigo nas redes sociais (Dimensão recomendada: 1200 x 630 pixels).</p>
                 
-                <div class="image-upload" id="uploadBox">
+                <div class="image-upload" id="uploadBoxSeo">
                     <input type="file" id="featured-image" accept="image/*" class="image-upload-input">
                     <div style="font-size: 32px; color: var(--light-purple); margin-bottom: 10px;">⬆️</div>
                     <p>Arraste e solte uma imagem aqui ou clique para selecionar</p>
@@ -364,54 +364,78 @@ function initializeMetatagEvents() {
     }
 }
 
-document.addEventListener("DOMContentLoaded", function () {
+/**
+ * Aguarda o carregamento do DOM antes de configurar os event listeners
+ */
+document.addEventListener("DOMContentLoaded", () => {
+    // Aumentei o tempo de espera para garantir que todos os elementos estejam carregados
     setTimeout(() => {
-        const inputFile = document.getElementById('featured-image');
-
-        if (inputFile) {
-            inputFile.addEventListener('change', carregarImagem);
-        } else {
-            console.error("Elemento #featured-image não encontrado no DOM.");
-        }
-    }, 100); // Delay para DOM dinâmico
-});
-
-function carregarImagem(event) {
-    const inputFile = event.target;
-
-    if (inputFile.files.length > 0) {
-        const file = inputFile.files[0];
-
-        const reader = new FileReader();
-        reader.onload = function (e) {
-            const uploadBox = document.getElementById('uploadBox');
-
-            // Remove imagem antiga se existir
-            const oldPreview = uploadBox.querySelector('img.preview');
-            if (oldPreview) oldPreview.remove();
-
-            // Cria nova imagem
-            const img = document.createElement('img');
-            img.src = e.target.result;
-            img.alt = "Imagem Selecionada";
-            img.classList.add('preview');
-            img.style.position = 'absolute';
-            img.style.top = '0';
-            img.style.left = '0';
-            img.style.width = '100%';
-            img.style.height = '100%';
-            img.style.objectFit = 'cover';
-            img.style.zIndex = '1';
-            img.style.borderRadius = '8px';
-
-            uploadBox.style.position = 'relative';
-            uploadBox.appendChild(img);
-        };
-
-        reader.readAsDataURL(file);
+      inicializarUploadsDeImagem();
+    }, 300); // Aumentado para 300ms
+  });
+  
+  /**
+   * Inicializa os listeners para os campos de upload de imagem
+   */
+  function inicializarUploadsDeImagem() {
+    // Tenta configurar listener para 'featured-image' se existir
+    const featuredImageInput = document.getElementById('featured-image');
+    if (featuredImageInput) {
+      console.log("Elemento #featured-image encontrado e configurado.");
+      featuredImageInput.addEventListener('change', exibirPreviewImagem);
     }
-}
-
+    
+    // Tenta configurar listener para 'fileInput' se existir
+    const fileInput = document.getElementById('fileInput');
+    if (fileInput) {
+      console.log("Elemento #fileInput encontrado e configurado.");
+      fileInput.addEventListener('change', exibirPreviewImagem);
+    }
+    
+    // Se nenhum dos elementos for encontrado, configura um listener global
+    if (!featuredImageInput && !fileInput) {
+      console.log("Nenhum elemento de upload específico encontrado. Configurando delegação de eventos.");
+      // Usa delegação de eventos para capturar qualquer input de arquivo
+      document.addEventListener('change', (event) => {
+        if (event.target.type === 'file') {
+          exibirPreviewImagem(event);
+        }
+      });
+    }
+  }
+  
+  /**
+   * Função unificada para exibir a prévia da imagem carregada
+   * @param {Event} event - O evento de mudança do input
+   */
+  function exibirPreviewImagem(event) {
+    const inputFile = event.target;
+    console.log('Input de arquivo detectado:', inputFile.id || 'sem ID');
+    
+    if (inputFile.files && inputFile.files.length > 0) {
+      const file = inputFile.files[0];
+      console.log('Arquivo selecionado:', file.name);
+      
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        // Busca o elemento 'uploadBox' para exibir a prévia
+        let uploadBox = document.getElementById('uploadBoxSeo');
+        
+        // Se não encontrar 'uploadBox', tenta criar um próximo ao input
+        if (!uploadBox) {
+          console.log("Elemento #uploadBoxSeo não encontrado. Tentando criar próximo ao input.");
+          uploadBox = document.createElement('div');
+          uploadBox.id = 'uploadBoxSeo';
+          uploadBox.className = 'upload-preview';
+          inputFile.parentNode.insertBefore(uploadBox, inputFile.nextSibling);
+        }
+        
+        uploadBox.innerHTML = `<img src="${e.target.result}" alt="Imagem Selecionada" style="max-width:100%; height:auto;">`;
+      };
+      
+      reader.readAsDataURL(file);
+    }
+  }
 
 const observer = new MutationObserver(() => {
     const titleInput = document.querySelector("#seo-title");

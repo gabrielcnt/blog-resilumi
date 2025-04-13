@@ -61,33 +61,78 @@ export const infoBasicaCreate = `
 
 
 
-    document.addEventListener("DOMContentLoaded", function () {
-        setTimeout(() => {
-            const inputFile = document.getElementById('featured-image');
-    
-            if (inputFile) {
-                inputFile.addEventListener('change', carregarImagem);
-            } else {
-                console.error("Elemento #featured-image não encontrado no DOM.");
-            }
-        }, 100); // Pequeno delay para esperar DOM dinâmico
-    });
-    
-    function carregarImagem(event) {
-        const inputFile = event.target;
-    
-        if (inputFile.files.length > 0) {
-            const file = inputFile.files[0];
-    
-            const reader = new FileReader();
-            reader.onload = function (e) {
-                const uploadBox = document.getElementById('uploadBox');
-                uploadBox.innerHTML = `<img src="${e.target.result}" alt="Imagem Selecionada" style="max-width:100%; height:auto;">`;
-            };
-            reader.readAsDataURL(file);
-        }
+/**
+ * Aguarda o carregamento do DOM antes de configurar os event listeners
+ */
+document.addEventListener("DOMContentLoaded", () => {
+    // Aumentei o tempo de espera para garantir que todos os elementos estejam carregados
+    setTimeout(() => {
+      inicializarUploadsDeImagem();
+    }, 300); // Aumentado para 300ms
+  });
+  
+  /**
+   * Inicializa os listeners para os campos de upload de imagem
+   */
+  function inicializarUploadsDeImagem() {
+    // Tenta configurar listener para 'featured-image' se existir
+    const featuredImageInput = document.getElementById('featured-image');
+    if (featuredImageInput) {
+      console.log("Elemento #featured-image encontrado e configurado.");
+      featuredImageInput.addEventListener('change', exibirPreviewImagem);
     }
-
+    
+    // Tenta configurar listener para 'fileInput' se existir
+    const fileInput = document.getElementById('fileInput');
+    if (fileInput) {
+      console.log("Elemento #fileInput encontrado e configurado.");
+      fileInput.addEventListener('change', exibirPreviewImagem);
+    }
+    
+    // Se nenhum dos elementos for encontrado, configura um listener global
+    if (!featuredImageInput && !fileInput) {
+      console.log("Nenhum elemento de upload específico encontrado. Configurando delegação de eventos.");
+      // Usa delegação de eventos para capturar qualquer input de arquivo
+      document.addEventListener('change', (event) => {
+        if (event.target.type === 'file') {
+          exibirPreviewImagem(event);
+        }
+      });
+    }
+  }
+  
+  /**
+   * Função unificada para exibir a prévia da imagem carregada
+   * @param {Event} event - O evento de mudança do input
+   */
+  function exibirPreviewImagem(event) {
+    const inputFile = event.target;
+    console.log('Input de arquivo detectado:', inputFile.id || 'sem ID');
+    
+    if (inputFile.files && inputFile.files.length > 0) {
+      const file = inputFile.files[0];
+      console.log('Arquivo selecionado:', file.name);
+      
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        // Busca o elemento 'uploadBox' para exibir a prévia
+        let uploadBox = document.getElementById('uploadBox');
+        
+        // Se não encontrar 'uploadBox', tenta criar um próximo ao input
+        if (!uploadBox) {
+          console.log("Elemento #uploadBox não encontrado. Tentando criar próximo ao input.");
+          uploadBox = document.createElement('div');
+          uploadBox.id = 'uploadBox';
+          uploadBox.className = 'upload-preview';
+          inputFile.parentNode.insertBefore(uploadBox, inputFile.nextSibling);
+        }
+        
+        uploadBox.innerHTML = `<img src="${e.target.result}" alt="Imagem Selecionada" style="max-width:100%; height:auto;">`;
+      };
+      
+      reader.readAsDataURL(file);
+    }
+  }
 
 export function getInfoBasicaData() {
     const title = document.querySelector('#title')?.value.trim()
