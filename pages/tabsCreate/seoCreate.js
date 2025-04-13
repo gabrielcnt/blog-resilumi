@@ -364,6 +364,53 @@ function initializeMetatagEvents() {
     }
 }
 
+document.addEventListener("DOMContentLoaded", function () {
+    setTimeout(() => {
+        const inputFile = document.getElementById('featured-image');
+
+        if (inputFile) {
+            inputFile.addEventListener('change', carregarImagem);
+        } else {
+            console.error("Elemento #featured-image não encontrado no DOM.");
+        }
+    }, 100); // Delay para DOM dinâmico
+});
+
+function carregarImagem(event) {
+    const inputFile = event.target;
+
+    if (inputFile.files.length > 0) {
+        const file = inputFile.files[0];
+
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            const uploadBox = document.getElementById('uploadBox');
+
+            // Remove imagem antiga se existir
+            const oldPreview = uploadBox.querySelector('img.preview');
+            if (oldPreview) oldPreview.remove();
+
+            // Cria nova imagem
+            const img = document.createElement('img');
+            img.src = e.target.result;
+            img.alt = "Imagem Selecionada";
+            img.classList.add('preview');
+            img.style.position = 'absolute';
+            img.style.top = '0';
+            img.style.left = '0';
+            img.style.width = '100%';
+            img.style.height = '100%';
+            img.style.objectFit = 'cover';
+            img.style.zIndex = '1';
+            img.style.borderRadius = '8px';
+
+            uploadBox.style.position = 'relative';
+            uploadBox.appendChild(img);
+        };
+
+        reader.readAsDataURL(file);
+    }
+}
 
 
 const observer = new MutationObserver(() => {
