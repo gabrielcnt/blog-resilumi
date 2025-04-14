@@ -39,6 +39,7 @@ export const infoBasicaCreate = `
                 <p>Clique para fazer upload ou arraste a imagem aqui</p>
                 <p style="font-size: 12px; margin-top: 5px; color: #888;">Dimensões recomendadas: 1200 x 630px</p>
             </div>
+            <p id="TrocarImagemInfo" style="cursor: pointer; color: var(--purple);">Trocar imagem</p>
         </div>
         
         <div class="form-row">
@@ -88,6 +89,14 @@ document.addEventListener("DOMContentLoaded", () => {
       console.log("Elemento #fileInput encontrado e configurado.");
       fileInput.addEventListener('change', exibirPreviewImagem);
     }
+
+     // Botão para trocar a imagem
+     const botaoTrocar = document.getElementById('TrocarImagemInfo');
+     if (botaoTrocar && featuredImageInput) {
+     botaoTrocar.addEventListener('click', () => {
+         featuredImageInput.click(); // Abre o seletor de arquivos
+     });
+     }
     
     // Se nenhum dos elementos for encontrado, configura um listener global
     if (!featuredImageInput && !fileInput) {

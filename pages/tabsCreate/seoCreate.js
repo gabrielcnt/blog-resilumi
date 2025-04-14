@@ -140,7 +140,7 @@ export const seoCreate = `<div id="seo-container" class="form-container">
                 <div class="preview-container">
                     <div class="preview-title">Visualização no Facebook/Twitter</div>
                     <div class="social-preview">
-                        <div class="social-image">
+                        <div id="imagePreview" class="social-image">
                             <img src="https://placehold.co/500x260" alt="Social preview">
                         </div>
                         <div class="social-content">
@@ -158,11 +158,12 @@ export const seoCreate = `<div id="seo-container" class="form-container">
                 <p style="font-size: 13px; color: #666; margin-bottom: 10px;">Selecione uma imagem que será exibida ao compartilhar o artigo nas redes sociais (Dimensão recomendada: 1200 x 630 pixels).</p>
                 
                 <div class="image-upload" id="uploadBoxSeo">
-                    <input type="file" id="featured-image" accept="image/*" class="image-upload-input">
+                    <input type="file" id="inputImg" accept="image/*" class="image-upload-input">
                     <div style="font-size: 32px; color: var(--light-purple); margin-bottom: 10px;">⬆️</div>
                     <p>Arraste e solte uma imagem aqui ou clique para selecionar</p>
                     <p style="font-size: 12px; color: #666; margin-top: 10px;">Formatos aceitos: JPG, PNG e GIF. Tamanho máximo: 5MB.</p>
                 </div>
+                <p id="btnTrocarImagemSeo" style="cursor: pointer; color: var(--purple);">Trocar imagem</p>
             </div>
             
             <!-- Metatags adicionais -->
@@ -185,28 +186,6 @@ export const seoCreate = `<div id="seo-container" class="form-container">
             </div>
         </div>`
 
-
-        // Informações de SEO:
-
-        // Título SEO (seo-title)
-        // Meta descrição (seo-description)
-        // URL amigável (seo-url)
-        // Palavra-chave principal (focus-keyword)
-        
-        
-        // Tags do artigo:
-        
-        // Lista de tags associadas ao artigo
-        
-        
-        // Metatags adicionais:
-        
-        // Pares de nome/valor das metatags personalizadas (como author, robots, etc.)
-        
-        
-        // Imagem para redes sociais:
-        
-        // Referência ao arquivo de imagem selecionado para compartilhamento em redes sociais
 
 // Função para atualizar os contadores de caracteres
 function updateCharacterCounters() {
@@ -362,26 +341,32 @@ function initializeMetatagEvents() {
         addButton.addEventListener("click", addMetaTagHandler);
         addButton.dataset.listener = "true";
     }
+
 }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    setTimeout(() => {
+        initializeMetatagEvents();
+    }, 300);
+  });
 
 /**
  * Aguarda o carregamento do DOM antes de configurar os event listeners
  */
 document.addEventListener("DOMContentLoaded", () => {
-    // Aumentei o tempo de espera para garantir que todos os elementos estejam carregados
     setTimeout(() => {
       inicializarUploadsDeImagem();
-    }, 300); // Aumentado para 300ms
+    }, 300);
   });
   
-  /**
-   * Inicializa os listeners para os campos de upload de imagem
+  /*
+   Inicializa os listeners para os campos de upload de imagem
    */
   function inicializarUploadsDeImagem() {
     // Tenta configurar listener para 'featured-image' se existir
-    const featuredImageInput = document.getElementById('featured-image');
+    const featuredImageInput = document.getElementById('inputImg');
     if (featuredImageInput) {
-      console.log("Elemento #featured-image encontrado e configurado.");
+      console.log("Elemento #inputImg encontrado e configurado.");
       featuredImageInput.addEventListener('change', exibirPreviewImagem);
     }
     
@@ -390,6 +375,14 @@ document.addEventListener("DOMContentLoaded", () => {
     if (fileInput) {
       console.log("Elemento #fileInput encontrado e configurado.");
       fileInput.addEventListener('change', exibirPreviewImagem);
+    }
+
+    // Botão para trocar a imagem
+    const botaoTrocar = document.getElementById('btnTrocarImagemSeo');
+    if (botaoTrocar && featuredImageInput) {
+    botaoTrocar.addEventListener('click', () => {
+        featuredImageInput.click(); // Abre o seletor de arquivos
+    });
     }
     
     // Se nenhum dos elementos for encontrado, configura um listener global
@@ -420,6 +413,12 @@ document.addEventListener("DOMContentLoaded", () => {
       reader.onload = function(e) {
         // Busca o elemento 'uploadBox' para exibir a prévia
         let uploadBox = document.getElementById('uploadBoxSeo');
+
+        // Atualiza a div de visualização fixa (500x260)
+        const previewFixa = document.getElementById('imagePreview');
+        if (previewFixa) {
+        previewFixa.innerHTML = `<img src="${e.target.result}" alt="Preview Fixo" style="width: 100%; height: 100%; object-fit: cover;">`;
+        }
         
         // Se não encontrar 'uploadBox', tenta criar um próximo ao input
         if (!uploadBox) {
@@ -436,6 +435,8 @@ document.addEventListener("DOMContentLoaded", () => {
       reader.readAsDataURL(file);
     }
   }
+
+  
 
 const observer = new MutationObserver(() => {
     const titleInput = document.querySelector("#seo-title");
@@ -484,6 +485,41 @@ const observer = new MutationObserver(() => {
         observer.disconnect(); // Para de observar após encontrar os elementos
     }
 });
+
+function getSeoData () {
+      // Informações de SEO:
+
+        // Título SEO (seo-title)
+        const title = document.querySelector('#seo-title').value
+        // Meta descrição (seo-description)
+        const description = document.querySelector("#seo-decription").value
+        // URL amigável (seo-url)
+        const url = document.querySelector("#seo-url").value
+        // Palavra-chave principal (focus-keyword)
+        const keyword = document.querySelector("#focus-keyword").value
+        // Tags do artigo:
+        const tags = Array.from(document.querySelectorAll('.tag-input-container .tag span:first-child'))
+            .map(span => span.textContent.trim())
+            .filter(tag => tag !== ""); // Filtra tags vazias
+        
+        // Lista de tags associadas ao artigo
+        const tagsList = document.querySelectorAll(".tag-input-container .tag")
+        const tagsArray = Array.from(tagsList).map(tag=> tag.querySelector("span").testContent.trim())
+        
+        // Metatags adicionais:
+        const metatags = Array.from(document.querySelectorAll("#metatags-container input[type='text']))"))
+            .map(input => input.value.trim())
+            .filter(value=> value !== "")
+        // Pares de nome/valor das metatags personalizadas (como author, robots, etc.)
+        
+        
+        // Imagem para redes sociais:
+        const imageInput = document.querySelector("#inputImg")
+        const imageFile = imageInput.files[0]
+        
+        
+        // Referência ao arquivo de imagem selecionado para compartilhamento em redes sociais
+}
 
 // Observar mudanças no corpo do documento
 observer.observe(document.body, { childList: true, subtree: true });

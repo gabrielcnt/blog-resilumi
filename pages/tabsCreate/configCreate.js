@@ -28,25 +28,6 @@ export const configCreate = `<div id="config-container" class="form-container">
     </div>
 
     <div class="form-group">
-        <label for="article-category">Categoria Principal</label>
-        <select id="article-category" class="form-control">
-            <option value="">Selecione uma categoria</option>
-            <option value="iluminacao">Iluminação</option>
-            <option value="tecnologia">Tecnologia</option>
-            <option value="decoracao">Decoração</option>
-            <option value="dicas">Dicas</option>
-        </select>
-    </div>
-
-    <div class="form-group">
-        <label>Tags</label>
-        <div class="tags-input-container">
-            <input type="text" id="tag-input" class="form-control" placeholder="Digite uma tag e pressione Enter">
-            <div id="tags-list" class="tags-list"></div>
-        </div>
-    </div>
-
-    <div class="form-group">
         <label>Visibilidade</label>
         <div class="toggle-group">
             <label class="toggle-label">
@@ -60,12 +41,6 @@ export const configCreate = `<div id="config-container" class="form-container">
                 <span class="toggle-text">Incluir na Newsletter</span>
             </label>
         </div>
-    </div>
-
-    <div class="form-group">
-        <label for="url-custom">URL Personalizada (opcional)</label>
-        <input type="text" id="url-custom" class="form-control" placeholder="url-do-seu-artigo">
-        <small class="help-text">Deixe em branco para gerar automaticamente</small>
     </div>
 
     <div class="form-actions">
