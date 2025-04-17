@@ -54,10 +54,10 @@ export const editorCreate = `<div id="editor-container" class="form-container">
                     </ul>
                 </div>
                 
-                <div class="form-actions">
+                <!--<div class="form-actions">
                     <button type="button" class="btn btn-secondary">Voltar: Informações</button>
                     <button type="button" class="btn btn-primary" id="btn-tab-next">Próximo: Imagens & SEO</button>
-                </div>
+                </div>-->
             </div>`
 
 let quill; // Variável para armazenar a instância do editor
@@ -72,14 +72,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }, 500); // Aguarda 500ms para garantir que o HTML foi injetado
 });
-
-function getEditorData() {
-    if (!quill) return { subtitulo: "", conteudo: "" }; // Evita erro caso o editor ainda não tenha sido inicializado
-    return {
-        subtitulo: document.getElementById("subtitle").value,
-        conteudo: quill.root.innerHTML.trim(),
-    };
-}
 
 export function validateConteudo() {
     let isValid = true;
@@ -114,3 +106,56 @@ style.innerHTML = `
     .error-border { border: 2px solid red !important; }
 `;
 document.head.appendChild(style);
+
+
+export function getConteudoData() {
+    if (!quill) {
+        console.error("Editor não inicializado");
+        return null;
+    }
+
+    try {
+        // Captura dados básicos
+        const subtitulo = document.getElementById("subtitle")?.value?.trim() || "";
+        const conteudoHTML = quill.root.innerHTML.trim();
+        const conteudoDelta = quill.getContents();
+        
+        // Conta palavras e caracteres
+        const texto = quill.getText().trim();
+        const palavras = texto.split(/\s+/).filter(word => word.length > 0).length;
+        const caracteres = texto.length;
+
+        // Captura todas as imagens do conteúdo
+        const images = [];
+        quill.root.querySelectorAll('img').forEach(img => {
+            images.push({
+                src: img.src,
+                alt: img.alt || '',
+                width: img.width || '',
+                height: img.height || ''
+            });
+        });
+
+        return {
+            subtitulo,
+            conteudo: {
+                html: conteudoHTML,
+                delta: conteudoDelta,
+                plainText: texto
+            },
+            metadata: {
+                palavras,
+                caracteres,
+                tempoLeitura: Math.ceil(palavras / 200) // ~200 palavras por minuto
+            },
+            media: {
+                images,
+                totalImages: images.length
+            },
+            updatedAt: new Date().toISOString()
+        };
+    } catch (error) {
+        console.error("Erro ao capturar dados do editor:", error);
+        return null;
+    }
+}

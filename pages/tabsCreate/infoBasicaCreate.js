@@ -1,3 +1,6 @@
+import { collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+
 export const infoBasicaCreate = `
     <div id="info-container" class="form-container">
         <h3 class="form-title">Detalhes do Artigo</h3>
@@ -12,11 +15,6 @@ export const infoBasicaCreate = `
                 <label for="category">Categoria*</label>
                 <select id="category" class="form-control">
                     <option value="">Selecione uma categoria</option>
-                    <option value="tech">Tecnologia</option>
-                    <option value="health">Saúde</option>
-                    <option value="business">Negócios</option>
-                    <option value="culture">Cultura</option>
-                    <option value="science">Ciência</option>
                 </select>
             </div>
             
@@ -54,21 +52,48 @@ export const infoBasicaCreate = `
             </div>
         </div>
         
-        <div class="form-actions">
+        <!--<div class="form-actions">
             <button class="btn btn-secondary">Cancelar</button>
             <button class="btn btn-primary">Próximo: Conteúdo</button>
-        </div>
+        </div>-->
     </div>`
 
-
+// Função para carregar categorias do Firebase
+async function loadCategorias() {
+    try {
+        const querySnapshot = await getDocs(collection(window.db, "categories"));
+        const selectElement = document.getElementById('category');
+        
+        if (selectElement) {
+            // Limpa opções existentes, mantendo apenas o placeholder
+            selectElement.innerHTML = '<option value="">Selecione uma categoria</option>';
+            
+            // Adiciona apenas categorias ativas
+            querySnapshot.docs
+                .map(doc => ({id: doc.id, ...doc.data()}))
+                .filter(category => category.status === 'Ativo')
+                .sort((a, b) => a.name.localeCompare(b.name))
+                .forEach(category => {
+                    const option = document.createElement('option');
+                    option.value = category.id; // Usa o ID como value
+                    option.textContent = category.name;
+                    selectElement.appendChild(option);
+                });
+        }
+    } catch (error) {
+        console.error("Erro ao carregar categorias:", error);
+        alert("Erro ao carregar categorias. Por favor, recarregue a página.");
+    }
+}
 
 /**
  * Aguarda o carregamento do DOM antes de configurar os event listeners
  */
 document.addEventListener("DOMContentLoaded", () => {
     // Aumentei o tempo de espera para garantir que todos os elementos estejam carregados
-    setTimeout(() => {
+    setTimeout(async () => {
       inicializarUploadsDeImagem();
+      await loadCategorias();
     }, 300); // Aumentado para 300ms
   });
   
@@ -145,6 +170,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 export function getInfoBasicaData() {
     const title = document.querySelector('#title')?.value.trim()
+    const categoryId = document.querySelector('#category')?.value; // Agora retorna o ID
     const category = document.querySelector('#category')?.value
     const author = document.querySelector('#author')?.value.trim()
     const descricao = document.querySelector('#excerpt')?.value.trim()
@@ -156,7 +182,10 @@ export function getInfoBasicaData() {
 
     return {
         title,
-        category,
+        category: {
+            id: categoryId,
+            name: categoryName
+        },
         author,
         descricao,
         data,

@@ -1,5 +1,6 @@
-import { validateInfoBasica } from "./infoBasicaCreate.js"
-import { validateConteudo } from "./conteudoCreate.js"
+import { validateInfoBasica, getInfoBasicaData } from "./infoBasicaCreate.js"
+import { validateConteudo, getConteudoData } from "./conteudoCreate.js"
+import { validateSeoData, getSeoData} from "./seoCreate.js"
 
 export const configCreate = `<div id="config-container" class="form-container">
     <h3 class="form-title">Configurações do Artigo</h3>
@@ -44,26 +45,64 @@ export const configCreate = `<div id="config-container" class="form-container">
     </div>
 
     <div class="form-actions">
-        <button type="button" class="btn btn-secondary">Voltar: SEO</button>
+        <!--<button type="button" class="btn btn-secondary">Voltar: SEO</button>-->
         <button type="button" class="btn btn-primary" id="btn-publish">Publicar Artigo</button>
     </div>
 </div>`
+
+export function getConfigData() {
+    return {
+        status: document.querySelector('input[name="status"]:checked').value,
+        scheduledDate: document.querySelector('input[name="status"]:checked').value === 'scheduled' 
+            ? new Date(document.getElementById('schedule-date').value).toISOString() 
+            : null,
+        featured: document.getElementById('featured').checked,
+        newsletter: document.getElementById('newsletter').checked
+    };
+}
 
 function attachPublishEvent() {
     const publishButton = document.getElementById('btn-publish');
 
     if (publishButton) {
-        publishButton.replaceWith(publishButton.cloneNode(true)); // Remove eventos duplicados
+        publishButton.replaceWith(publishButton.cloneNode(true));
         const newPublishButton = document.getElementById('btn-publish');
 
-        newPublishButton.addEventListener('click', function () {
-            if (typeof validateInfoBasica === 'function' && typeof validateConteudo === 'function') {
-                if (!validateInfoBasica() || !validateConteudo()) {
-                    alert("Preencha todos os campos obrigatórios antes de publicar.");
+        newPublishButton.addEventListener('click', async function () {
+            try {
+                // Validações
+                if (!validateInfoBasica()) {
+                    alert("Preencha todos os campos obrigatórios na aba Informações Básicas");
                     return;
                 }
-            } else {
-                console.error("Erro: Função de validação não está definida.");
+                if (!validateConteudo()) {
+                    alert("Preencha o conteúdo do artigo");
+                    return;
+                }
+                if (!validateSeoData()) {
+                    alert("Preencha todos os campos SEO obrigatórios");
+                    return;
+                }
+
+                // Coleta todos os dados
+                const articleData = {
+                    ...getInfoBasicaData(),
+                    ...getConteudoData(),
+                    seo: getSeoData(),
+                    config: getConfigData(),
+                    createdAt: new Date().toISOString(),
+                    updatedAt: new Date().toISOString()
+                };
+
+                // Dispara evento customizado com os dados
+                const event = new CustomEvent('articleDataReady', { 
+                    detail: articleData 
+                });
+                document.dispatchEvent(event);
+
+            } catch (error) {
+                console.error("Erro ao coletar dados do artigo:", error);
+                alert("Erro ao preparar dados do artigo: " + error.message);
             }
         });
     }

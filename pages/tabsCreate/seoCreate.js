@@ -76,7 +76,7 @@ export const seoCreate = `<div id="seo-container" class="form-container">
             <!-- Configurações SEO -->
             <div class="form-group">
                 <label for="seo-title">Título SEO</label>
-                <input type="text" id="seo-title" class="form-control" placeholder="Digite o título SEO (55-60 caracteres)" value="Como a Inteligência Artificial está moldando o futuro">
+                <input type="text" id="seo-title" class="form-control" placeholder="Digite o título SEO (55-60 caracteres)" value="">
                 <div style="display: flex; justify-content: flex-end; margin-top: 5px;">
                     <span id="contTitle" style="font-size: 12px; color: #666;">55 caracteres (recomendado: 60)</span>
                 </div>
@@ -84,7 +84,7 @@ export const seoCreate = `<div id="seo-container" class="form-container">
             
             <div class="form-group">
                 <label for="seo-description">Meta Descrição</label>
-                <textarea id="seo-description" class="form-control" placeholder="Digite a meta descrição (140-160 caracteres)">Uma análise profunda sobre o impacto da IA no mercado de trabalho, na educação e no cotidiano das pessoas. Descubra as implicações éticas e o futuro.</textarea>
+                <textarea id="seo-description" class="form-control" placeholder="Digite a meta descrição (140-160 caracteres)"></textarea>
                 <div style="display: flex; justify-content: flex-end; margin-top: 5px;">
                     <span id="contDescription" style="font-size: 12px; color: #666;">143 caracteres <span>(recomendado: 160)</span></span>
                 </div>
@@ -93,8 +93,8 @@ export const seoCreate = `<div id="seo-container" class="form-container">
             <div class="form-group">
                 <label for="seo-url">URL Amigável</label>
                 <div style="display: flex; align-items: center; gap: 0;">
-                    <div style="padding: 12px; background-color: #f5f5f5; border: 1px solid #ddd; border-right: none; border-radius: 4px 0 0 4px; color: #666;">www.seublog.com/</div>
-                    <input type="text" id="seo-url" class="form-control" style="border-radius: 0 4px 4px 0;" placeholder="url-amigavel-do-artigo" value="inteligencia-artificial-futuro">
+                    <div style="padding: 12px; background-color: #f5f5f5; border: 1px solid #ddd; border-right: none; border-radius: 4px 0 0 4px; color: #666;">www.Resilumi.com.br/</div>
+                    <input type="text" id="seo-url" class="form-control" style="border-radius: 0 4px 4px 0;" placeholder="url-amigavel-do-artigo" value="">
                 </div>
             </div>
             
@@ -106,18 +106,6 @@ export const seoCreate = `<div id="seo-container" class="form-container">
             <div class="form-group">
                 <label>Tags do Artigo</label>
                 <div class="tag-input-container">
-                    <div class="tag">
-                        <span>Inteligência Artificial</span>
-                        <span class="tag-remove">×</span>
-                    </div>
-                    <div class="tag">
-                        <span>Tecnologia</span>
-                        <span class="tag-remove">×</span>
-                    </div>
-                    <div class="tag">
-                        <span>Futuro</span>
-                        <span class="tag-remove">×</span>
-                    </div>
                     <input type="text" class="tag-input" placeholder="Digite e pressione Enter para adicionar">
                 </div>
             </div>
@@ -129,7 +117,7 @@ export const seoCreate = `<div id="seo-container" class="form-container">
                     <div class="preview-title">Visualização no Google</div>
                     <div class="search-preview">
                         <div class="search-title">Como a Inteligência Artificial está moldando o futuro</div>
-                        <div class="search-url">www.seublog.com › inteligencia-artificial-futuro</div>
+                        <div class="search-url">www.Resilumi.com.br › inteligencia-artificial-futuro</div>
                         <div class="search-description">Uma análise profunda sobre o impacto da IA no mercado de trabalho, na educação e no cotidiano das pessoas. Descubra as implicações éticas e o futuro.</div>
                     </div>
                 </div>
@@ -144,7 +132,7 @@ export const seoCreate = `<div id="seo-container" class="form-container">
                             <img src="https://placehold.co/500x260" alt="Social preview">
                         </div>
                         <div class="social-content">
-                            <div class="social-url">seublog.com</div>
+                            <div class="social-url">Resilumi.com.br</div>
                             <div class="social-title">Como a Inteligência Artificial está moldando o futuro</div>
                             <div class="social-description">Uma análise profunda sobre o impacto da IA no mercado de trabalho, na educação e no cotidiano das pessoas.</div>
                         </div>
@@ -180,10 +168,10 @@ export const seoCreate = `<div id="seo-container" class="form-container">
             </div>
 
             <!-- Ações do formulário -->
-            <div class="form-actions">
+            <!--<div class="form-actions">
                 <button class="btn btn-secondary">Voltar: Conteúdo</button>
                 <button class="btn btn-primary">Próximo: Configurações</button>
-            </div>
+            </div>-->
         </div>`
 
 
@@ -461,11 +449,11 @@ const observer = new MutationObserver(() => {
         function updatePreview() {
             searchTitle.textContent = titleInput.value || "Título do artigo";
             searchDescription.textContent = descriptionInput.value || "Descrição do artigo";
-            searchUrl.textContent = `www.seublog.com › ${urlInput.value || "url-do-artigo"}`;
+            searchUrl.textContent = `www.Resilumi.com.br › ${urlInput.value || "url-do-artigo"}`;
 
             socialTitle.textContent = titleInput.value || "Título do artigo";
             socialDescription.textContent = descriptionInput.value || "Descrição do artigo";
-            socialUrl.textContent = "seublog.com";
+            socialUrl.textContent = "Resilumi.com.br";
         }
 
         titleInput.addEventListener("input", updatePreview);
@@ -486,39 +474,72 @@ const observer = new MutationObserver(() => {
     }
 });
 
-function getSeoData () {
-      // Informações de SEO:
+export function getSeoData() {
+    try {
+        // Captura elementos básicos
+        const title = document.querySelector('#seo-title')?.value?.trim() || '';
+        const description = document.querySelector('#seo-description')?.value?.trim() || ''; // Corrigido nome do seletor
+        const url = document.querySelector('#seo-url')?.value?.trim() || '';
+        const keyword = document.querySelector('#focus-keyword')?.value?.trim() || '';
 
-        // Título SEO (seo-title)
-        const title = document.querySelector('#seo-title').value
-        // Meta descrição (seo-description)
-        const description = document.querySelector("#seo-decription").value
-        // URL amigável (seo-url)
-        const url = document.querySelector("#seo-url").value
-        // Palavra-chave principal (focus-keyword)
-        const keyword = document.querySelector("#focus-keyword").value
-        // Tags do artigo:
+        // Captura tags
         const tags = Array.from(document.querySelectorAll('.tag-input-container .tag span:first-child'))
             .map(span => span.textContent.trim())
-            .filter(tag => tag !== ""); // Filtra tags vazias
+            .filter(tag => tag !== '');
+
+        // Captura metatags
+        const metatagInputs = document.querySelectorAll('#metatags-container div:not(#add-metatag) input');
+        const metatags = [];
         
-        // Lista de tags associadas ao artigo
-        const tagsList = document.querySelectorAll(".tag-input-container .tag")
-        const tagsArray = Array.from(tagsList).map(tag=> tag.querySelector("span").testContent.trim())
-        
-        // Metatags adicionais:
-        const metatags = Array.from(document.querySelectorAll("#metatags-container input[type='text']))"))
-            .map(input => input.value.trim())
-            .filter(value=> value !== "")
-        // Pares de nome/valor das metatags personalizadas (como author, robots, etc.)
-        
-        
-        // Imagem para redes sociais:
-        const imageInput = document.querySelector("#inputImg")
-        const imageFile = imageInput.files[0]
-        
-        
-        // Referência ao arquivo de imagem selecionado para compartilhamento em redes sociais
+        // Agrupa inputs em pares (nome/conteúdo)
+        for (let i = 0; i < metatagInputs.length; i += 2) {
+            const name = metatagInputs[i]?.value?.trim();
+            const content = metatagInputs[i + 1]?.value?.trim();
+            
+            if (name && content) {
+                metatags.push({ name, content });
+            }
+        }
+
+        // Captura imagem
+        const imageInput = document.querySelector('#inputImg');
+        const imageFile = imageInput?.files[0] || null;
+
+        // Validações básicas
+        if (!title) throw new Error('O título SEO é obrigatório');
+        if (!description) throw new Error('A meta descrição é obrigatória');
+        if (!url) throw new Error('A URL amigável é obrigatória');
+        if (!keyword) throw new Error('A palavra-chave principal é obrigatória');
+
+        // Retorna objeto com todos os dados
+        return {
+            seo: {
+                title,
+                description,
+                url,
+                keyword,
+                tags,
+                metatags
+            },
+            image: imageFile
+        };
+
+    } catch (error) {
+        console.error('Erro ao capturar dados SEO:', error);
+        throw error;
+    }
+}
+
+// Exemplo de uso:
+export function validateSeoData() {
+    try {
+        const seoData = getSeoData();
+        console.log('Dados SEO capturados:', seoData);
+        return true;
+    } catch (error) {
+        alert(error.message);
+        return false;
+    }
 }
 
 // Observar mudanças no corpo do documento
