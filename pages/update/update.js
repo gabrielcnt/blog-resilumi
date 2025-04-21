@@ -3,8 +3,7 @@ import {infoBasicaUpdate} from "../tabsUpdate/infoBasicaUpdate.js"
 import {editorUpdate} from "../tabsUpdate/conteudoUpdate.js"
 import {seoUpdate} from "../tabsUpdate/seoUpdate.js"
 import {configUpdate} from "../tabsUpdate/configUpdate.js"
-import {setActiveTab, initTabNavigation} from "../../utils/tabNavigation.js"
-import {initQuillEditor} from "../../utils/editorQuill.js"
+import {initTabNavigation} from "../../utils/tabNavigation.js"
 
 
 export default () => {

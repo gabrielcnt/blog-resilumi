@@ -1,4 +1,5 @@
-import {initQuillEditor} from "../../utils/editorQuill.js"
+
+    let editor = null
 
 export const editorCreate = `<div id="editor-container" class="form-container">
                 <h3 class="form-title">Editor de Conteúdo</h3>
@@ -8,8 +9,8 @@ export const editorCreate = `<div id="editor-container" class="form-container">
                     <input type="text" id="subtitle" class="form-control" placeholder="Adicione um subtítulo para o seu artigo">
                 </div>
                 
-                <!-- Container do Quill -->
-                <div id="quill-editor" class="editor-content"></div>
+                <!-- Container do editor -->
+                <div id="div-editor" class="editor-content"></div>
                 <div class="media-buttons">
                     <button class="media-btn" id="add-image">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -59,103 +60,28 @@ export const editorCreate = `<div id="editor-container" class="form-container">
                     <button type="button" class="btn btn-primary" id="btn-tab-next">Próximo: Imagens & SEO</button>
                 </div>-->
             </div>`
+            
+const waitForEditorArea = setInterval(() => {
+    const area = document.querySelector("#div-editor");
+    if (area && window.RichTextEditor) {
+        clearInterval(waitForEditorArea);
+        const editor = new RichTextEditor("#div-editor");
 
-let quill; // Variável para armazenar a instância do editor
+        // Função para atualizar contador
+        function updateCounts() {
+            const text = editor.getText(); // pega texto sem HTML
+            const words = text.trim().split(/\s+/).filter(word => word.length > 0);
+            const wordCount = words.length;
+            const charCount = text.replace(/\s/g, "").length;
 
-document.addEventListener("DOMContentLoaded", () => {
-    setTimeout(() => {
-        const container = document.getElementById("editor-container");
-        if (container) {
-            quill = initQuillEditor(container);
-        } else {
-            console.error("O container do editor não foi encontrado.");
+            document.getElementById("word-count").textContent = wordCount;
+            document.getElementById("char-count").textContent = charCount;
         }
-    }, 500); // Aguarda 500ms para garantir que o HTML foi injetado
-});
 
-export function validateConteudo() {
-    let isValid = true;
+        // Atualiza contador ao digitar
+        editor.attachEvent("change", updateCounts);
 
-    function markInvalid(fieldId) {
-        const field = document.getElementById(fieldId);
-        if (field) {
-            field.classList.add("error-border");
-        }
-        isValid = false;
+        // Atualiza também ao carregar algum conteúdo pré-existente
+        updateCounts();
     }
-
-    function clearInvalid(fieldId) {
-        const field = document.getElementById(fieldId);
-        if (field) {
-            field.classList.remove("error-border");
-        }
-    }
-
-    // Validar conteúdo do Quill
-    if (!quill) return false; // Garante que o Quill foi carregado antes da validação
-    const quillContent = quill.root.innerHTML.trim();
-    if (!quillContent || quillContent === "<p><br></p>") markInvalid("quill-editor");
-    else clearInvalid("quill-editor");
-
-    return isValid;
-}
-
-// Adiciona estilos para erro
-const style = document.createElement('style');
-style.innerHTML = `
-    .error-border { border: 2px solid red !important; }
-`;
-document.head.appendChild(style);
-
-
-export function getConteudoData() {
-    if (!quill) {
-        console.error("Editor não inicializado");
-        return null;
-    }
-
-    try {
-        // Captura dados básicos
-        const subtitulo = document.getElementById("subtitle")?.value?.trim() || "";
-        const conteudoHTML = quill.root.innerHTML.trim();
-        const conteudoDelta = quill.getContents();
-        
-        // Conta palavras e caracteres
-        const texto = quill.getText().trim();
-        const palavras = texto.split(/\s+/).filter(word => word.length > 0).length;
-        const caracteres = texto.length;
-
-        // Captura todas as imagens do conteúdo
-        const images = [];
-        quill.root.querySelectorAll('img').forEach(img => {
-            images.push({
-                src: img.src,
-                alt: img.alt || '',
-                width: img.width || '',
-                height: img.height || ''
-            });
-        });
-
-        return {
-            subtitulo,
-            conteudo: {
-                html: conteudoHTML,
-                delta: conteudoDelta,
-                plainText: texto
-            },
-            metadata: {
-                palavras,
-                caracteres,
-                tempoLeitura: Math.ceil(palavras / 200) // ~200 palavras por minuto
-            },
-            media: {
-                images,
-                totalImages: images.length
-            },
-            updatedAt: new Date().toISOString()
-        };
-    } catch (error) {
-        console.error("Erro ao capturar dados do editor:", error);
-        return null;
-    }
-}
+}, 500);

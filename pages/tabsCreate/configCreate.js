@@ -1,5 +1,4 @@
 import { validateInfoBasica, getInfoBasicaData } from "./infoBasicaCreate.js"
-import { validateConteudo, getConteudoData } from "./conteudoCreate.js"
 import { validateSeoData, getSeoData} from "./seoCreate.js"
 
 export const configCreate = `<div id="config-container" class="form-container">
