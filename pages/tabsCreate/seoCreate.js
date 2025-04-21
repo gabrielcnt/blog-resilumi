@@ -534,9 +534,51 @@ export function getSeoData() {
 export function validateSeoData() {
     try {
         const seoData = getSeoData();
-        console.log('Dados SEO capturados:', seoData);
+        
+        // Validações específicas
+        if (!seoData.seo.title || seoData.seo.title.length < 30) {
+            throw new Error('O título SEO deve ter pelo menos 30 caracteres');
+        }
+
+        if (seoData.seo.title.length > 60) {
+            throw new Error('O título SEO não pode ter mais de 60 caracteres');
+        }
+
+        if (!seoData.seo.description || seoData.seo.description.length < 120) {
+            throw new Error('A meta descrição deve ter pelo menos 120 caracteres');
+        }
+
+        if (seoData.seo.description.length > 160) {
+            throw new Error('A meta descrição não pode ter mais de 160 caracteres');
+        }
+
+        if (!seoData.seo.url) {
+            throw new Error('A URL amigável é obrigatória');
+        }
+
+        // Valida se a URL contém apenas caracteres permitidos
+        if (!/^[a-z0-9-]+$/.test(seoData.seo.url)) {
+            throw new Error('A URL deve conter apenas letras minúsculas, números e hífens');
+        }
+
+        if (!seoData.seo.keyword) {
+            throw new Error('A palavra-chave principal é obrigatória');
+        }
+
+        if (!seoData.seo.tags || seoData.seo.tags.length === 0) {
+            throw new Error('Adicione pelo menos uma tag ao artigo');
+        }
+
+        // Valida se a palavra-chave está no título
+        if (!seoData.seo.title.toLowerCase().includes(seoData.seo.keyword.toLowerCase())) {
+            throw new Error('A palavra-chave principal deve estar presente no título SEO');
+        }
+
+        console.log('Dados SEO validados com sucesso:', seoData);
         return true;
+
     } catch (error) {
+        console.error('Erro na validação SEO:', error);
         alert(error.message);
         return false;
     }

@@ -13,30 +13,7 @@ export const editorCreate = `<div id="editor-container" class="form-container">
                 
                 <!-- Container do editor -->
                 <div id="div-editor" class="editor-content"></div>
-                <div class="media-buttons">
-                    <button class="media-btn" id="add-image">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                            <circle cx="8.5" cy="8.5" r="1.5"></circle>
-                            <polyline points="21 15 16 10 5 21"></polyline>
-                        </svg>
-                        Adicionar Imagem
-                    </button>
-                    <button class="media-btn" id="add-video">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <polygon points="23 7 16 12 23 17 23 7"></polygon>
-                            <rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect>
-                        </svg>
-                        Adicionar Vídeo
-                    </button>
-                    <button class="media-btn" id="add-code">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <polyline points="16 18 22 12 16 6"></polyline>
-                            <polyline points="8 6 2 12 8 18"></polyline>
-                        </svg>
-                        Inserir Código
-                    </button>
-                </div>
+                
                 
                 <!-- Editor Quill -->
                 
@@ -66,7 +43,8 @@ export const editorCreate = `<div id="editor-container" class="form-container">
 export function destroyEditor() {
     if (editor) {
         try {
-            editor.destroy();
+            editor.destory(); // Note: RichTextEditor usa 'destory' em vez de 'destroy'
+            document.querySelector("#div-editor").innerHTML = ''; // Limpa o container
         } catch (error) {
             console.error('Erro ao destruir editor:', error);
         }
@@ -77,27 +55,28 @@ export function destroyEditor() {
 
 // Função para inicializar o editor
 export function initEditor() {
-    // Primeiro destruímos qualquer instância existente
-    destroyEditor();
-
+    if (editorInitialized) return; // Evita inicialização dupla
+    
     try {
         const editorContainer = document.querySelector("#div-editor");
         if (!editorContainer) {
-            console.error('Container do editor não encontrado');
-            return;
+            throw new Error('Container do editor não encontrado');
         }
 
         editor = new RichTextEditor("#div-editor", {
             height: "400px",
             width: "100%",
             toolbar: "full",
-            change: updateCounts // Agora updateCounts está acessível
+            contentCssUrl: "../utils/richtexteditor/runtime/richtexteditor_content.css",
+            skin: "gray",
+            change: () => {
+                // Pequeno delay para garantir que o conteúdo foi atualizado
+                setTimeout(updateCounts, 100);
+            }
         });
         
         editorInitialized = true;
         console.log('Editor inicializado com sucesso');
-        
-        // Atualiza contadores iniciais
         updateCounts();
     } catch (error) {
         console.error('Erro ao inicializar editor:', error);
@@ -113,13 +92,48 @@ function updateCounts() {
     if (!editor) return;
     
     try {
-        const text = editor.getText(); // pega texto sem HTML
-        const words = text.trim().split(/\s+/).filter(word => word.length > 0);
+        // Pega o conteúdo HTML do editor
+        const conteudoHTML = editor.getHTML();
+        
+        // Remove as tags HTML e caracteres especiais
+        const textoLimpo = conteudoHTML
+            .replace(/<[^>]*>/g, ' ')  // Remove tags HTML
+            .replace(/&nbsp;/g, ' ')   // Remove &nbsp;
+            .replace(/\s+/g, ' ')      // Remove espaços extras
+            .trim();                   // Remove espaços no início/fim
+        
+        // Conta palavras e caracteres
+        const words = textoLimpo.split(' ').filter(word => word.length > 0);
         const wordCount = words.length;
-        const charCount = text.replace(/\s/g, "").length;
+        const charCount = textoLimpo.length;
 
-        document.getElementById("word-count").textContent = wordCount;
-        document.getElementById("char-count").textContent = charCount;
+        // Atualiza os contadores na interface
+        const wordCountElement = document.getElementById("word-count");
+        const charCountElement = document.getElementById("char-count");
+
+        if (wordCountElement) wordCountElement.textContent = wordCount;
+        if (charCountElement) charCountElement.textContent = charCount;
+
+        console.log('Contagem atualizada:', { palavras: wordCount, caracteres: charCount });
+    
+    // Calcula e atualiza o tempo de leitura
+        // Média de 200 palavras por minuto
+        const tempoLeitura = Math.max(1, Math.ceil(wordCount / 200));
+        const readingTimeInput = document.getElementById('reading-time');
+        
+        if (readingTimeInput) {
+            readingTimeInput.value = tempoLeitura;
+            
+            // Dispara evento de change para atualizar validações se necessário
+            readingTimeInput.dispatchEvent(new Event('change'));
+        }
+
+        console.log('Contagem atualizada:', { 
+            palavras: wordCount, 
+            caracteres: charCount,
+            tempoLeitura: tempoLeitura 
+        });
+
     } catch (error) {
         console.error('Erro ao atualizar contadores:', error);
     }

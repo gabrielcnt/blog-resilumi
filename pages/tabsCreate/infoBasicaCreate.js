@@ -48,7 +48,7 @@ export const infoBasicaCreate = `
             
             <div class="form-group">
                 <label for="reading-time">Tempo de Leitura (min)</label>
-                <input type="number" id="reading-time" class="form-control" min="1" value="5">
+                <input type="number" id="reading-time" class="form-control" min="1" value="0">
             </div>
         </div>
         
@@ -168,29 +168,57 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-export function getInfoBasicaData() {
-    const title = document.querySelector('#title')?.value.trim()
-    const categoryId = document.querySelector('#category')?.value; // Agora retorna o ID
-    const category = document.querySelector('#category')?.value
-    const author = document.querySelector('#author')?.value.trim()
-    const descricao = document.querySelector('#excerpt')?.value.trim()
-    const data = document.querySelector('#publish-date')?.value
-    const tempoLeitura = document.querySelector('#reading-time')?.value
+  export function getInfoBasicaData() {
+    try {
+        // Atualiza os seletores para corresponder aos IDs corretos do HTML
+        const title = document.getElementById('title')?.value.trim();
+        const category = document.getElementById('category')?.value;
+        const author = document.getElementById('author')?.value;
+        const descricao = document.getElementById('excerpt')?.value.trim(); // Corrigido de 'description' para 'excerpt'
+        const thumbnailInput = document.getElementById('featured-image'); // Corrigido de 'thumbnail' para 'featured-image'
+        const readingTime = document.getElementById('reading-time')?.value || '1';
+        
+        // Remove validação manual do tempo de leitura já que será calculado automaticamente
+        if (!title) {
+            throw new Error('O título é obrigatório');
+        }
+        if (!category) {
+            throw new Error('Selecione uma categoria');
+        }
+        if (!author) {
+            throw new Error('O autor é obrigatório');
+        }
+        if (!descricao) {
+            throw new Error('O resumo é obrigatório');
+        }
 
-    const inputFile = document.querySelector('#featured-image');
-    const imagem = inputFile.files.length > 0 ? inputFile.files[0] : null;
+        // Objeto com os dados básicos
+        const infoBasica = {
+            title,
+            category,
+            author,
+            descricao,
+            publishDate: publishDate || new Date().toISOString(),
+            readingTime: parseInt(readingTime),
+            data: new Date().toISOString(),
+            thumbnail: null
+        };
 
-    return {
-        title,
-        category: {
-            id: categoryId,
-            name: categoryName
-        },
-        author,
-        descricao,
-        data,
-        tempoLeitura,
-        imagem  // Objeto File
+        // Verifica se tem arquivo de imagem destacada
+        if (thumbnailInput && thumbnailInput.files && thumbnailInput.files[0]) {
+            infoBasica.thumbnail = {
+                name: thumbnailInput.files[0].name,
+                type: thumbnailInput.files[0].type,
+                size: thumbnailInput.files[0].size
+            };
+        }
+
+        console.log('Dados básicos coletados:', infoBasica);
+        return infoBasica;
+
+    } catch (error) {
+        console.error('Erro ao coletar dados básicos:', error);
+        throw new Error(error.message); // Retorna a mensagem específica do erro
     }
 }
 

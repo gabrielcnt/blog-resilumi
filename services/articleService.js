@@ -2,7 +2,8 @@ import {
     collection, 
     addDoc, 
     getDocs, 
-    doc, 
+    doc,
+    setDoc, 
     updateDoc, 
     deleteDoc, 
     getDoc,
@@ -20,32 +21,67 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
 
 export const articleService = {
-    // Criar artigo
     async create(articleData) {
         try {
+            // Sanitiza os dados principais
+            const sanitizedData = {
+                // Info básica
+                title: articleData.info?.title || '',
+                category: articleData.info?.category || '',
+                author: articleData.info?.author || '',
+                descricao: articleData.info?.descricao || '',
+                
+                // Conteúdo (apenas metadados)
+                subtitulo: articleData.conteudo?.subtitulo || '',
+                palavras: articleData.conteudo?.metadata?.palavras || 0,
+                caracteres: articleData.conteudo?.metadata?.caracteres || 0,
+                
+                // SEO
+                metaTitle: articleData.seo?.metaTitle || '',
+                metaDescription: articleData.seo?.metaDescription || '',
+                keywords: articleData.seo?.keywords || [],
+                
+                // Configurações
+                status: articleData.config?.status || 'draft',
+                featured: articleData.config?.featured || false,
+                newsletter: articleData.config?.newsletter || false,
+                scheduledDate: articleData.config?.scheduledDate || null,
+                
+                // Metadados
+                createdAt: new Date(),
+                updatedAt: new Date(),
+                views: 0
+            };
+
             // Upload da imagem se existir
             if (articleData.seo?.image) {
                 const storage = getStorage();
                 const imageRef = ref(storage, `articles/${Date.now()}_${articleData.seo.image.name}`);
                 await uploadBytes(imageRef, articleData.seo.image);
-                articleData.seo.imageUrl = await getDownloadURL(imageRef);
-                delete articleData.seo.image; // Remove o arquivo antes de salvar
+                sanitizedData.imageUrl = await getDownloadURL(imageRef);
             }
 
-            const docRef = await addDoc(collection(window.db, "articles"), {
-                ...articleData,
-                createdAt: new Date(),
-                updatedAt: new Date(),
-                views: 0
-            });
+            // Primeiro cria o documento principal
+            const docRef = await addDoc(collection(window.db, "articles"), sanitizedData);
             
+            // Depois armazena o conteúdo em um documento separado
+            if (articleData.conteudo?.conteudo) {
+                await setDoc(doc(window.db, "articles_content", docRef.id), {
+                    content: articleData.conteudo.conteudo,
+                    articleId: docRef.id,
+                    updatedAt: new Date()
+                });
+            }
+
             console.log("Artigo criado com ID:", docRef.id);
             return docRef.id;
+
         } catch (error) {
             console.error("Erro ao criar artigo:", error);
             throw error;
         }
     },
+
 
     // Listar todos os artigos
     async getAll(filters = {}) {
