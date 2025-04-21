@@ -1,5 +1,6 @@
 import { validateInfoBasica, getInfoBasicaData } from "./infoBasicaCreate.js"
 import { validateSeoData, getSeoData} from "./seoCreate.js"
+import { validateConteudo, getConteudoData } from "./conteudoCreate.js"
 
 export const configCreate = `<div id="config-container" class="form-container">
     <h3 class="form-title">Configurações do Artigo</h3>
@@ -74,26 +75,34 @@ function attachPublishEvent() {
                     alert("Preencha todos os campos obrigatórios na aba Informações Básicas");
                     return;
                 }
-                if (!validateConteudo()) {
-                    alert("Preencha o conteúdo do artigo");
+
+                // Valida conteúdo
+                const conteudoData = getConteudoData();
+                if (!conteudoData || !validateConteudo()) {
+                    alert("Verifique o conteúdo do artigo");
                     return;
                 }
+
                 if (!validateSeoData()) {
                     alert("Preencha todos os campos SEO obrigatórios");
                     return;
                 }
 
-                // Coleta todos os dados
+                // Monta objeto final do artigo
                 const articleData = {
-                    ...getInfoBasicaData(),
-                    ...getConteudoData(),
+                    info: getInfoBasicaData(),
+                    conteudo: conteudoData,
                     seo: getSeoData(),
                     config: getConfigData(),
-                    createdAt: new Date().toISOString(),
-                    updatedAt: new Date().toISOString()
+                    metadata: {
+                        createdAt: new Date().toISOString(),
+                        updatedAt: new Date().toISOString()
+                    }
                 };
 
-                // Dispara evento customizado com os dados
+                console.log("Dados do artigo:", articleData);
+
+                // Dispara evento com os dados
                 const event = new CustomEvent('articleDataReady', { 
                     detail: articleData 
                 });

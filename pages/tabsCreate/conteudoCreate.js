@@ -1,5 +1,7 @@
 
-    let editor = null
+
+let editor = null
+let editorInitialized = false;
 
 export const editorCreate = `<div id="editor-container" class="form-container">
                 <h3 class="form-title">Editor de Conteúdo</h3>
@@ -60,28 +62,140 @@ export const editorCreate = `<div id="editor-container" class="form-container">
                     <button type="button" class="btn btn-primary" id="btn-tab-next">Próximo: Imagens & SEO</button>
                 </div>-->
             </div>`
-            
-const waitForEditorArea = setInterval(() => {
-    const area = document.querySelector("#div-editor");
-    if (area && window.RichTextEditor) {
-        clearInterval(waitForEditorArea);
-        const editor = new RichTextEditor("#div-editor");
 
-        // Função para atualizar contador
-        function updateCounts() {
-            const text = editor.getText(); // pega texto sem HTML
-            const words = text.trim().split(/\s+/).filter(word => word.length > 0);
-            const wordCount = words.length;
-            const charCount = text.replace(/\s/g, "").length;
+export function destroyEditor() {
+    if (editor) {
+        try {
+            editor.destroy();
+        } catch (error) {
+            console.error('Erro ao destruir editor:', error);
+        }
+        editor = null;
+        editorInitialized = false;
+    }
+}
 
-            document.getElementById("word-count").textContent = wordCount;
-            document.getElementById("char-count").textContent = charCount;
+// Função para inicializar o editor
+export function initEditor() {
+    // Primeiro destruímos qualquer instância existente
+    destroyEditor();
+
+    try {
+        const editorContainer = document.querySelector("#div-editor");
+        if (!editorContainer) {
+            console.error('Container do editor não encontrado');
+            return;
         }
 
-        // Atualiza contador ao digitar
-        editor.attachEvent("change", updateCounts);
-
-        // Atualiza também ao carregar algum conteúdo pré-existente
+        editor = new RichTextEditor("#div-editor", {
+            height: "400px",
+            width: "100%",
+            toolbar: "full",
+            change: updateCounts // Agora updateCounts está acessível
+        });
+        
+        editorInitialized = true;
+        console.log('Editor inicializado com sucesso');
+        
+        // Atualiza contadores iniciais
         updateCounts();
+    } catch (error) {
+        console.error('Erro ao inicializar editor:', error);
     }
-}, 500);
+}
+
+// Remove o setInterval redundante já que a inicialização é feita via initEditor
+window.addEventListener('hashchange', () => {
+    destroyEditor();
+});
+
+function updateCounts() {
+    if (!editor) return;
+    
+    try {
+        const text = editor.getText(); // pega texto sem HTML
+        const words = text.trim().split(/\s+/).filter(word => word.length > 0);
+        const wordCount = words.length;
+        const charCount = text.replace(/\s/g, "").length;
+
+        document.getElementById("word-count").textContent = wordCount;
+        document.getElementById("char-count").textContent = charCount;
+    } catch (error) {
+        console.error('Erro ao atualizar contadores:', error);
+    }
+}
+
+// Função para obter dados do conteúdo
+export function getConteudoData() {
+    try {
+        if (!editor) {
+            console.error("Editor não está inicializado");
+            return null;
+        }
+
+        // Obtém o subtítulo
+        const subtitulo = document.querySelector("#subtitle")?.value.trim() || "";
+
+        // Obtém o conteúdo do editor
+        const conteudoHTML = editor.getHTML();
+        const textoLimpo = conteudoHTML.replace(/<[^>]*>/g, ' ')
+            .replace(/&nbsp;/g, ' ')
+            .replace(/\s+/g, ' ')
+            .trim();
+
+        // Obtém métricas do conteúdo
+        const palavras = textoLimpo.split(' ').filter(word => word.length > 0);
+        const numPalavras = palavras.length;
+        const numCaracteres = textoLimpo.length;
+
+        return {
+            subtitulo,
+            conteudo: conteudoHTML,
+            metadata: {
+                palavras: numPalavras,
+                caracteres: numCaracteres
+            }
+        };
+
+    } catch (error) {
+        console.error("Erro ao obter dados do conteúdo:", error);
+        return null;
+    }
+}
+
+// Função para validar o conteúdo
+export function validateConteudo() {
+    try {
+        if (!editor) {
+            console.error("Editor não está inicializado");
+            return false;
+        }
+
+        const conteudoData = getConteudoData();
+        if (!conteudoData) return false;
+
+        const { conteudo, subtitulo, metadata } = conteudoData;
+
+        // Validações
+        if (conteudo === '' || conteudo === '<p></p>' || conteudo === '<p><br></p>') {
+            alert("O conteúdo não pode estar vazio");
+            return false;
+        }
+
+        if (metadata.palavras < 100) {
+            alert("O artigo deve ter pelo menos 100 palavras");
+            return false;
+        }
+
+        if (subtitulo && subtitulo.length > 150) {
+            alert("O subtítulo não pode ter mais de 150 caracteres");
+            return false;
+        }
+
+        return true;
+
+    } catch (error) {
+        console.error("Erro ao validar conteúdo:", error);
+        return false;
+    }
+}

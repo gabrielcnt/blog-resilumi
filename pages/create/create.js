@@ -2,13 +2,12 @@ import { backToList } from "../../utils/navigation.js"
 import { initTabNavigation } from "../../utils/tabNavigation.js"
 import {infoBasicaCreate} from "../tabsCreate/infoBasicaCreate.js"
 import {seoCreate} from "../tabsCreate/seoCreate.js"
-import { editorCreate } from "../tabsCreate/conteudoCreate.js"
+import { editorCreate, initEditor, destroyEditor } from "../tabsCreate/conteudoCreate.js"
 import {configCreate} from "../tabsCreate/configCreate.js"
 import { articleService } from "../../services/articleService.js"
 
-export default () => {
 
-    
+export default () => {
 
     const container = document.createElement('div')
 
@@ -43,23 +42,9 @@ export default () => {
         backToList(container)
         initTabNavigation(container)
         
-      
-       
-        
+        destroyEditor(); 
         // Inicializa o editor quando a tab for clicada
-        document.getElementById('tab-editor').addEventListener('click', () => {
-            if (!editorInitialized) {
-                const editorContainer = document.querySelector('#editor-container')
-                if (editorContainer) {
-                    // Inicie o RichTextEditor ao invés do Quill
-                    const editor = new RichTextEditor("#div-editor");
-                    editorInitialized = true;
-                    console.log('Editor inicializado com sucesso');
-                } else {
-                    console.error('Container do editor não encontrado');
-                }
-            }
-        })
+        document.getElementById('tab-editor').addEventListener('click', initEditor)
     }, 500)
     
      // Adiciona listener para receber os dados do artigo
