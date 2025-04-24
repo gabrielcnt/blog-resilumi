@@ -2,7 +2,7 @@ import { validateInfoBasica, getInfoBasicaData } from "./infoBasicaCreate.js"
 import { validateSeoData, getSeoData} from "./seoCreate.js"
 import { validateConteudo, getConteudoData } from "./conteudoCreate.js"
 
-export const configCreate = `<div id="config-container" class="form-container">
+export const configCreate = (articleData = {}) => `<div id="config-container" class="form-container">
     <h3 class="form-title">Configurações do Artigo</h3>
 
     <div class="form-group">

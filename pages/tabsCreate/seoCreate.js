@@ -1,4 +1,4 @@
-export const seoCreate = `<div id="seo-container" class="form-container">
+export const seoCreate = (articleData = {}) => `<div id="seo-container" class="form-container">
             <h3 class="form-title">Imagens e Otimização para Buscadores</h3>
             
             <!-- Seção de Galeria de Imagens -->
@@ -100,7 +100,7 @@ export const seoCreate = `<div id="seo-container" class="form-container">
             
             <div class="form-group">
                 <label for="focus-keyword">Palavra-chave Principal</label>
-                <input type="text" id="focus-keyword" class="form-control" placeholder="Ex: inteligência artificial" value="inteligência artificial">
+                <input type="text" id="focus-keyword" class="form-control" placeholder="Ex: inteligência artificial" value="">
             </div>
             
             <div class="form-group">

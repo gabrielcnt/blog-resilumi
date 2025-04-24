@@ -1,6 +1,8 @@
 import {openModal} from "../../utils/modal/modal.js"
 import { btnEdit, btnView } from "../../utils/navigation.js"
 import {setActiveSection} from "../../utils/sidebarNavigation.js"
+import { articleService } from "../../services/articleService.js";
+
 
 export default () => {
     const container = document.createElement('div')
@@ -66,69 +68,19 @@ export default () => {
                     </thead>
                     <tbody>
                         <tr>
-                            <td>Como a Inteligência Artificial está moldando o futuro</td>
-                            <td>Tecnologia</td>
-                            <td>João Silva</td>
-                            <td>12/03/2025</td>
-                            <td><span class="status-badge status-published">Publicado</span></td>
-                            <td>1,245</td>
-                            <td class="actions">
-                                <button class="btn btn-view">Ver</button>
-                                <button class="btn btn-edit">Editar</button>
-                                <button class="btn btn-delete">Excluir</button>
-                            </td>
+                            
                         </tr>
                         <tr>
-                            <td>Novos avanços no tratamento do Alzheimer</td>
-                            <td>Saúde</td>
-                            <td>Maria Oliveira</td>
-                            <td>10/03/2025</td>
-                            <td><span class="status-badge status-published">Publicado</span></td>
-                            <td>1,245</td>
-                            <td class="actions">
-                                <button class="btn btn-view">Ver</button>
-                                <button class="btn btn-edit">Editar</button>
-                                <button class="btn btn-delete">Excluir</button>
-                            </td>
+                            
                         </tr>
                         <tr>
-                            <td>Estratégias para crescimento sustentável em 2025</td>
-                            <td>Negócios</td>
-                            <td>Carlos Mendes</td>
-                            <td>08/03/2025</td>
-                            <td><span class="status-badge status-draft">Rascunho</span></td>
-                            <td>1,245</td>
-                            <td class="actions">
-                                <button class="btn btn-view">Ver</button>
-                                <button class="btn btn-edit">Editar</button>
-                                <button class="btn btn-delete">Excluir</button>
-                            </td>
+                            
                         </tr>
                         <tr>
-                            <td>O renascimento da literatura regional no mundo digital</td>
-                            <td>Cultura</td>
-                            <td>Ana Santos</td>
-                            <td>05/03/2025</td>
-                            <td><span class="status-badge status-published">Publicado</span></td>
-                            <td>1,245</td>
-                            <td class="actions">
-                                <button class="btn btn-view">Ver</button>
-                                <button class="btn btn-edit">Editar</button>
-                                <button class="btn btn-delete">Excluir</button>
-                            </td>
+                            
                         </tr>
                         <tr>
-                            <td>Nova descoberta sobre energia renovável</td>
-                            <td>Ciência</td>
-                            <td>Rafael Costa</td>
-                            <td>03/03/2025</td>
-                            <td><span class="status-badge status-scheduled">Agendado</span></td>
-                            <td>1,245</td>
-                            <td class="actions">
-                                <button class="btn btn-view">Ver</button>
-                                <button class="btn btn-edit">Editar</button>
-                                <button class="btn btn-delete">Excluir</button>
-                            </td>
+                           
                         </tr>
                     </tbody>
                 </table>
@@ -173,6 +125,48 @@ export default () => {
     openModal(container)
     setActiveSection('dashboard-section')
 
-    
+    // Chama a função para carregar os artigos
+    readArticles(container);
+
     return container
+
+    async function readArticles(container) {
+        try {
+            const articles = await articleService.getAll(); // Busca todos os artigos
+            const tbody = container.querySelector("tbody");
+            tbody.innerHTML = ""; // Limpa o conteúdo atual da tabela
+    
+            articles.forEach((article) => {
+                const row = `
+                    <tr>
+                        <td>${article.title || "Sem título"}</td>
+                        <td>${article.category || "Sem categoria"}</td>
+                        <td>${article.author || "Desconhecido"}</td>
+                        <td>${new Date(article.createdAt.toDate()).toLocaleDateString() || "Sem data"}</td>
+                        <td><span class="status-badge status-${article.status || "draft"}">${article.status || "Rascunho"}</span></td>
+                        <td>${article.views || 0}</td>
+                        <td class="actions">
+                            <button class="btn btn-view" data-id="${article.id}">Ver</button>
+                            <button class="btn btn-edit" data-id="${article.id}">Editar</button>
+                            <button class="btn btn-delete" data-id="${article.id}">Excluir</button>
+                        </td>
+                    </tr>
+                `;
+                tbody.innerHTML += row;
+            });
+    
+            console.log("Artigos carregados com sucesso!");
+    
+        } catch (error) {
+            console.error("Erro ao carregar artigos:", error);
+        }
+        // Adicione os eventos de clique para os botões de editar
+        const editButtons = container.querySelectorAll(".btn-edit");
+        editButtons.forEach((button) => {
+            button.addEventListener("click", (event) => {
+                const articleId = event.target.getAttribute("data-id");
+                window.location.hash = `#/editarArtigo/${articleId}`; // Redireciona para a página de update
+            });
+        });
+    }
 }

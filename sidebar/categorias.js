@@ -1,5 +1,6 @@
 import { collection, addDoc, getDocs, updateDoc, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js"
 
+import {db} from "../services/firebase/config.js"
 
 export default () => {
     const container = document.createElement('div')
@@ -239,10 +240,10 @@ export default () => {
     const saveCategory = async (categoryData, id = null) => {
         try {
             if (id) {
-                const docRef = doc(window.db, "categories", id)
+                const docRef = doc(db, "categories", id)
                 await updateDoc(docRef, categoryData)
             } else {
-                await addDoc(collection(window.db, "categories"), categoryData)
+                await addDoc(collection(db, "categories"), categoryData)
             }
             await loadCategories() // Recarrega a tabela
         } catch (error) {
@@ -253,7 +254,7 @@ export default () => {
 
     const deleteCategory = async (id) => {
         try {
-            await deleteDoc(doc(window.db, "categories", id))
+            await deleteDoc(doc(db, "categories", id))
             await loadCategories() // Recarrega a tabela
         } catch (error) {
             console.error("Erro ao deletar categoria:", error)
@@ -263,7 +264,7 @@ export default () => {
 
     const loadCategories = async () => {
         try {
-            const querySnapshot = await getDocs(collection(window.db, "categories"))
+            const querySnapshot = await getDocs(collection(db, "categories"))
             
             // Mapeia os documentos para um array de categorias
             const categories = querySnapshot.docs.map(doc => ({

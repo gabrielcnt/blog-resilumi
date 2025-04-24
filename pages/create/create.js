@@ -1,15 +1,20 @@
 import { backToList } from "../../utils/navigation.js"
 import { initTabNavigation } from "../../utils/tabNavigation.js"
-import {infoBasicaCreate} from "../tabsCreate/infoBasicaCreate.js"
+import {infoBasicaCreate, loadCategorias} from "../tabsCreate/infoBasicaCreate.js"
 import {seoCreate} from "../tabsCreate/seoCreate.js"
 import { editorCreate, initEditor, destroyEditor } from "../tabsCreate/conteudoCreate.js"
 import {configCreate} from "../tabsCreate/configCreate.js"
 import { articleService } from "../../services/articleService.js"
 
 
-export default () => {
+export default async () => {
 
     const container = document.createElement('div')
+
+    // Carrega as categorias do Firestore
+    console.log("Carregando categorias...");
+    await loadCategorias();
+    console.log("Categorias carregadas.");
 
     // Template do cabeçalho com as tabs
     const headerTemplate = `<div class="dashboard-header">
@@ -36,34 +41,42 @@ export default () => {
 
 
         </div>`
-    container.innerHTML = headerTemplate
-    
-    setTimeout(() => {
-        backToList(container)
-        initTabNavigation(container)
-        
-        destroyEditor(); 
-        // Inicializa o editor quando a tab for clicada
-        document.getElementById('tab-editor').addEventListener('click', initEditor)
-    }, 500)
-    
-     // Adiciona listener para receber os dados do artigo
-     document.addEventListener('articleDataReady', async (event) => {
-        try {
-            const articleData = event.detail;
-            console.log("Dados do artigo recebidos:", articleData);
+        container.innerHTML = headerTemplate;
 
-            // Salva no Firebase através do service
-            await articleService.create(articleData);
-            
-            alert("Artigo salvo com sucesso!");
-            window.location.hash = "#/dashboard";
-            
-        } catch (error) {
-            console.error("Erro ao salvar artigo:", error);
-            alert("Erro ao salvar artigo: " + error.message);
-        }
-    });
+        
     
-    return container   
+        // Inicializa navegação entre tabs e outros eventos
+        setTimeout(() => {
+            backToList(container);
+            initTabNavigation(container);
+    
+            destroyEditor();
+    
+            // Inicializa o editor quando a tab "Conteúdo" for clicada
+            const tabEditor = document.getElementById("tab-editor");
+            if (tabEditor) {
+                tabEditor.addEventListener("click", initEditor);
+            } else {
+                console.error("Elemento 'tab-editor' não encontrado.");
+            }
+        }, 500);
+    
+        // Adiciona listener para salvar o artigo
+        container.addEventListener("articleDataReady", async (event) => {
+            try {
+                const articleData = event.detail;
+                console.log("Dados do artigo recebidos:", articleData);
+    
+                // Salva no Firebase através do service
+                await articleService.create(articleData);
+    
+                alert("Artigo salvo com sucesso!");
+                window.location.hash = "#/dashboard";
+            } catch (error) {
+                console.error("Erro ao salvar artigo:", error);
+                alert("Erro ao salvar artigo: " + error.message);
+            }
+        });
+    
+        return container;
 }

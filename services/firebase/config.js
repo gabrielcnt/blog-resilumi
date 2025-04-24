@@ -1,4 +1,8 @@
-const firebaseConfig = {
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { getFirestore } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+// Configuração do Firebase
+export const firebaseConfig = {
     apiKey: "AIzaSyDR9HXeh9eNScZdlPWq2pS9ie1JrKEzzt0",
     authDomain: "blog-resilumi.firebaseapp.com",
     projectId: "blog-resilumi",
@@ -8,4 +12,8 @@ const firebaseConfig = {
     measurementId: "G-4FH9R2SN9G"
 };
 
-export default firebaseConfig;
+// Inicializa o Firebase App
+const app = initializeApp(firebaseConfig);
+
+// Inicializa o Firestore
+export const db = getFirestore(app);

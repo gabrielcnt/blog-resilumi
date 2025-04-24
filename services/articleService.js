@@ -20,6 +20,8 @@ import {
     getDownloadURL 
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
 
+import { db } from "../services/firebase/config.js";
+
 export const articleService = {
     async create(articleData) {
         try {
@@ -62,11 +64,11 @@ export const articleService = {
             }
 
             // Primeiro cria o documento principal
-            const docRef = await addDoc(collection(window.db, "articles"), sanitizedData);
+            const docRef = await addDoc(collection(db, "articles"), sanitizedData);
             
             // Depois armazena o conteúdo em um documento separado
             if (articleData.conteudo?.conteudo) {
-                await setDoc(doc(window.db, "articles_content", docRef.id), {
+                await setDoc(doc(db, "articles_content", docRef.id), {
                     content: articleData.conteudo.conteudo,
                     articleId: docRef.id,
                     updatedAt: new Date()
@@ -86,7 +88,7 @@ export const articleService = {
     // Listar todos os artigos
     async getAll(filters = {}) {
         try {
-            let q = collection(window.db, "articles");
+            let q = collection(db, "articles");
             
             // Aplica filtros
             if (filters.status) {
@@ -113,12 +115,14 @@ export const articleService = {
         }
     },
 
+    
+
     // Buscar artigos agendados
     async getScheduledArticles() {
         try {
             const now = new Date();
             const q = query(
-                collection(window.db, "articles"),
+                collection(db, "articles"),
                 where("status", "==", "scheduled"),
                 where("scheduledDate", "<=", now)
             );
@@ -137,7 +141,7 @@ export const articleService = {
     // Buscar um artigo por ID
     async getById(id) {
         try {
-            const docRef = doc(window.db, "articles", id);
+            const docRef = doc(db, "articles", id);
             const docSnap = await getDoc(docRef);
 
             if (docSnap.exists()) {
@@ -154,7 +158,7 @@ export const articleService = {
     // Atualizar artigo
     async updateStatus(id, status) {
         try {
-            const docRef = doc(window.db, "articles", id);
+            const docRef = doc(db, "articles", id);
             await updateDoc(docRef, {
                 status,
                 updatedAt: new Date()
@@ -169,7 +173,7 @@ export const articleService = {
     // Deletar artigo
     async delete(id) {
         try {
-            await deleteDoc(doc(window.db, "articles", id));
+            await deleteDoc(doc(db, "articles", id));
             console.log("Artigo deletado com sucesso");
         } catch (error) {
             console.error("Erro ao deletar artigo:", error);
@@ -180,7 +184,7 @@ export const articleService = {
     // Incrementar visualizações
     async incrementViews(id) {
         try {
-            const docRef = doc(window.db, "articles", id);
+            const docRef = doc(db, "articles", id);
             await updateDoc(docRef, {
                 views: firebase.firestore.FieldValue.increment(1)
             });
@@ -192,7 +196,7 @@ export const articleService = {
 
     async update(id, articleData) {
         try {
-            const docRef = doc(window.db, "articles", id);
+            const docRef = doc(db, "articles", id);
             
             // Se houver nova imagem
             if (articleData.seo?.image) {
@@ -218,7 +222,7 @@ export const articleService = {
     async getFeatured() {
         try {
             const q = query(
-                collection(window.db, "articles"),
+                collection(db, "articles"),
                 where("featured", "==", true),
                 where("status", "==", "published"),
                 orderBy("createdAt", "desc")

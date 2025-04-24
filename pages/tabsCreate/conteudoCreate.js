@@ -3,7 +3,7 @@
 let editor = null
 let editorInitialized = false;
 
-export const editorCreate = `<div id="editor-container" class="form-container">
+export const editorCreate = (articleData = {}) => `<div id="editor-container" class="form-container">
                 <h3 class="form-title">Editor de Conteúdo</h3>
                 
                 <div class="form-group">
@@ -43,7 +43,7 @@ export const editorCreate = `<div id="editor-container" class="form-container">
 export function destroyEditor() {
     if (editor) {
         try {
-            editor.destory(); // Note: RichTextEditor usa 'destory' em vez de 'destroy'
+            editor.destroy(); // Note: RichTextEditor usa 'destory' em vez de 'destroy'
             document.querySelector("#div-editor").innerHTML = ''; // Limpa o container
         } catch (error) {
             console.error('Erro ao destruir editor:', error);
@@ -53,10 +53,57 @@ export function destroyEditor() {
     }
 }
 
-// Função para inicializar o editor
+function updateCounts() {
+    if (!editor) {
+        console.error("Editor não está inicializado");
+        return;
+    }
+
+    try {
+        // Obtém o conteúdo HTML do editor
+        const conteudoHTML = editor.getHTML();
+
+        // Remove as tags HTML e caracteres especiais
+        const textoLimpo = conteudoHTML
+            .replace(/<[^>]*>/g, ' ')  // Remove tags HTML
+            .replace(/&nbsp;/g, ' ')   // Remove &nbsp;
+            .replace(/\s+/g, ' ')      // Remove espaços extras
+            .trim();                   // Remove espaços no início/fim
+
+        // Conta palavras e caracteres
+        const palavras = textoLimpo.split(' ').filter(word => word.length > 0);
+        const numPalavras = palavras.length;
+        const numCaracteres = textoLimpo.length;
+
+        // Atualiza os contadores na interface
+        const wordCountElement = document.getElementById("word-count");
+        const charCountElement = document.getElementById("char-count");
+
+        if (wordCountElement) wordCountElement.textContent = numPalavras;
+        if (charCountElement) charCountElement.textContent = numCaracteres;
+
+        // Calcula o tempo de leitura (200 palavras por minuto)
+        const tempoLeitura = Math.max(1, Math.ceil(numPalavras / 200));
+        const readingTimeInput = document.getElementById("reading-time");
+
+        if (readingTimeInput) {
+            readingTimeInput.value = tempoLeitura;
+        }
+
+        console.log('Contagem atualizada:', {
+            palavras: numPalavras,
+            caracteres: numCaracteres,
+            tempoLeitura: tempoLeitura
+        });
+
+    } catch (error) {
+        console.error("Erro ao atualizar contadores:", error);
+    }
+}
+
 export function initEditor() {
     if (editorInitialized) return; // Evita inicialização dupla
-    
+
     try {
         const editorContainer = document.querySelector("#div-editor");
         if (!editorContainer) {
@@ -69,15 +116,17 @@ export function initEditor() {
             toolbar: "full",
             contentCssUrl: "../utils/richtexteditor/runtime/richtexteditor_content.css",
             skin: "gray",
-            change: () => {
-                // Pequeno delay para garantir que o conteúdo foi atualizado
-                setTimeout(updateCounts, 100);
-            }
+
         });
         
+        editor.attachEvent("change", () => {
+            setTimeout(updateCounts, 300); // Pequeno delay para capturar alterações completas
+        });
+        updateCounts();
+
         editorInitialized = true;
         console.log('Editor inicializado com sucesso');
-        updateCounts();
+        updateCounts(); // Atualiza os contadores na inicialização
     } catch (error) {
         console.error('Erro ao inicializar editor:', error);
     }
@@ -87,57 +136,6 @@ export function initEditor() {
 window.addEventListener('hashchange', () => {
     destroyEditor();
 });
-
-function updateCounts() {
-    if (!editor) return;
-    
-    try {
-        // Pega o conteúdo HTML do editor
-        const conteudoHTML = editor.getHTML();
-        
-        // Remove as tags HTML e caracteres especiais
-        const textoLimpo = conteudoHTML
-            .replace(/<[^>]*>/g, ' ')  // Remove tags HTML
-            .replace(/&nbsp;/g, ' ')   // Remove &nbsp;
-            .replace(/\s+/g, ' ')      // Remove espaços extras
-            .trim();                   // Remove espaços no início/fim
-        
-        // Conta palavras e caracteres
-        const words = textoLimpo.split(' ').filter(word => word.length > 0);
-        const wordCount = words.length;
-        const charCount = textoLimpo.length;
-
-        // Atualiza os contadores na interface
-        const wordCountElement = document.getElementById("word-count");
-        const charCountElement = document.getElementById("char-count");
-
-        if (wordCountElement) wordCountElement.textContent = wordCount;
-        if (charCountElement) charCountElement.textContent = charCount;
-
-        console.log('Contagem atualizada:', { palavras: wordCount, caracteres: charCount });
-    
-    // Calcula e atualiza o tempo de leitura
-        // Média de 200 palavras por minuto
-        const tempoLeitura = Math.max(1, Math.ceil(wordCount / 200));
-        const readingTimeInput = document.getElementById('reading-time');
-        
-        if (readingTimeInput) {
-            readingTimeInput.value = tempoLeitura;
-            
-            // Dispara evento de change para atualizar validações se necessário
-            readingTimeInput.dispatchEvent(new Event('change'));
-        }
-
-        console.log('Contagem atualizada:', { 
-            palavras: wordCount, 
-            caracteres: charCount,
-            tempoLeitura: tempoLeitura 
-        });
-
-    } catch (error) {
-        console.error('Erro ao atualizar contadores:', error);
-    }
-}
 
 // Função para obter dados do conteúdo
 export function getConteudoData() {

@@ -1,7 +1,8 @@
 import { collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import {db} from "../../services/firebase/config.js"
 
 
-export const infoBasicaCreate = `
+export const infoBasicaCreate = (articleData = {}) => `
     <div id="info-container" class="form-container">
         <h3 class="form-title">Detalhes do Artigo</h3>
         
@@ -59,24 +60,31 @@ export const infoBasicaCreate = `
     </div>`
 
 // Função para carregar categorias do Firebase
-async function loadCategorias() {
+export async function loadCategorias(selectedCategoryId = "") {
     try {
-        const querySnapshot = await getDocs(collection(window.db, "categories"));
+        // Busca as categorias no Firestore
+        const querySnapshot = await getDocs(collection(db, "categories"));
         const selectElement = document.getElementById('category');
         
         if (selectElement) {
             // Limpa opções existentes, mantendo apenas o placeholder
             selectElement.innerHTML = '<option value="">Selecione uma categoria</option>';
             
-            // Adiciona apenas categorias ativas
+            // Adiciona as categorias e marca a selecionada
             querySnapshot.docs
-                .map(doc => ({id: doc.id, ...doc.data()}))
-                .filter(category => category.status === 'Ativo')
-                .sort((a, b) => a.name.localeCompare(b.name))
+                .map(doc => ({ id: doc.id, ...doc.data() })) // Mapeia os documentos para objetos
+                .filter(category => category.status === 'Ativo') // Filtra apenas categorias ativas
+                .sort((a, b) => a.name.localeCompare(b.name)) // Ordena alfabeticamente
                 .forEach(category => {
                     const option = document.createElement('option');
                     option.value = category.id; // Usa o ID como value
-                    option.textContent = category.name;
+                    option.textContent = category.name; // Exibe o nome da categoria
+                    
+                    // Marca a categoria previamente escolhida como selecionada
+                    if (category.id === selectedCategoryId) {
+                        option.selected = true;
+                    }
+                    
                     selectElement.appendChild(option);
                 });
         }
@@ -86,17 +94,6 @@ async function loadCategorias() {
     }
 }
 
-/**
- * Aguarda o carregamento do DOM antes de configurar os event listeners
- */
-document.addEventListener("DOMContentLoaded", () => {
-    // Aumentei o tempo de espera para garantir que todos os elementos estejam carregados
-    setTimeout(async () => {
-      inicializarUploadsDeImagem();
-      await loadCategorias();
-    }, 300); // Aumentado para 300ms
-  });
-  
   /**
    * Inicializa os listeners para os campos de upload de imagem
    */
@@ -177,7 +174,8 @@ document.addEventListener("DOMContentLoaded", () => {
         const descricao = document.getElementById('excerpt')?.value.trim(); // Corrigido de 'description' para 'excerpt'
         const thumbnailInput = document.getElementById('featured-image'); // Corrigido de 'thumbnail' para 'featured-image'
         const readingTime = document.getElementById('reading-time')?.value || '1';
-        
+        const publishDate = document.getElementById('publish-date')?.value; // Adicionado para capturar a data de publicação
+
         // Remove validação manual do tempo de leitura já que será calculado automaticamente
         if (!title) {
             throw new Error('O título é obrigatório');
@@ -198,7 +196,7 @@ document.addEventListener("DOMContentLoaded", () => {
             category,
             author,
             descricao,
-            publishDate: publishDate || new Date().toISOString(),
+            publishDate: publishDate || new Date().toISOString(), // Usa a data atual se não for fornecida
             readingTime: parseInt(readingTime),
             data: new Date().toISOString(),
             thumbnail: null
